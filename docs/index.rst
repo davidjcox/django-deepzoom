@@ -108,8 +108,8 @@ How do I install it?
 or, like this::
 
     wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-<VERSION>.tar.gz
-    tar -xvf django-deepzoom-0.1.tar.gz
-    cd django-deepzoom-0.1
+    tar -xvf django-deepzoom-<VERSION>.tar.gz
+    cd django-deepzoom-<VERSION>
     python setup.py install
 
 If you download it directly, change <VERSION> to one of the available version 

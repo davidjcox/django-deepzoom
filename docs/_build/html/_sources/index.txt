@@ -108,8 +108,8 @@ How do I install it?
 or, like this::
 
     wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-<VERSION>.tar.gz
-    tar -xvf django-deepzoom-0.1.tar.gz
-    cd django-deepzoom-0.1
+    tar -xvf django-deepzoom-<VERSION>.tar.gz
+    cd django-deepzoom-<VERSION>
     python setup.py install
 
 If you download it directly, change <VERSION> to one of the available version 
@@ -233,10 +233,10 @@ If defined, but not actually created, your directory will be created for you.
 If left undefined, 'uploaded_images' is used as the default directory name.
 
 E.g. after prepending your media root, the default UPLOADEDIMAGE_ROOT is 
-'/path/to/media_root/uploaded_images/'
+*'/path/to/media_root/uploaded_images/'*.
 
 Or, if you define ``UPLOADEDIMAGE_ROOT='my/uploaded/images'``, the final path will 
-be '/path/to/media_root/my/uploaded/images/'
+be *'/path/to/media_root/my/uploaded/images/'*.
 
 
 **DEEPZOOM_PARAMS**
@@ -307,20 +307,22 @@ defined, but not actually created, your directory will be created for you.
 If left undefined, 'deepzoom_images' is used as the default directory name.
 
 E.g. after prepending your media root, the default DEEPZOOM_ROOT is 
-'/path/to/media_root/deepzoom_images/'
+*'/path/to/media_root/deepzoom_images/'*.
 
 Or, if you define ``DEEPZOOM_ROOT='my/deepzoom/images'``, the final path will be 
-'/path/to/media_root/my/deepzoom/images/'
+*'/path/to/media_root/my/deepzoom/images/'*.
 
 How is it licensed?
 ~~~~~~~~~~~~~~~~~~~
 
-Django-deepzoom is BSD-licensed for full use with attribution to the author.
+Django-deepzoom is BSD-licensed for full, unfettered use as long as attribution 
+is given to the author.
 
 How can I leave feedback?
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Send questions, suggestions, comments to <davidjcox.at@gmail.com>.
+
 Let me know if you're successfully using Django-deepzoom for your project.
 
 Build good things.

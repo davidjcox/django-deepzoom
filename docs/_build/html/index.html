@@ -146,8 +146,8 @@ element, a modal dialog, etc.  Knock yourself out.</p>
 </div>
 <p>or, like this:</p>
 <div class="highlight-python"><pre>wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-&lt;VERSION&gt;.tar.gz
-tar -xvf django-deepzoom-0.1.tar.gz
-cd django-deepzoom-0.1
+tar -xvf django-deepzoom-&lt;VERSION&gt;.tar.gz
+cd django-deepzoom-&lt;VERSION&gt;
 python setup.py install</pre>
 </div>
 <p>If you download it directly, change &lt;VERSION&gt; to one of the available version
@@ -254,9 +254,9 @@ uploaded images.  Do not include beginning or trailing directory separators.
 If defined, but not actually created, your directory will be created for you.
 If left undefined, &#8216;uploaded_images&#8217; is used as the default directory name.</p>
 <p>E.g. after prepending your media root, the default UPLOADEDIMAGE_ROOT is
-&#8216;/path/to/media_root/uploaded_images/&#8217;</p>
+<em>&#8216;/path/to/media_root/uploaded_images/&#8217;</em>.</p>
 <p>Or, if you define <tt class="docutils literal"><span class="pre">UPLOADEDIMAGE_ROOT='my/uploaded/images'</span></tt>, the final path will
-be &#8216;/path/to/media_root/my/uploaded/images/&#8217;</p>
+be <em>&#8216;/path/to/media_root/my/uploaded/images/&#8217;</em>.</p>
 <p><strong>DEEPZOOM_PARAMS</strong></p>
 <p>This is a list of arguments used to initialize the deep zoom creator, including
 &#8216;tile_size&#8217;, &#8216;tile_overlap&#8217;, &#8216;tile_format&#8217;, &#8216;image_quality&#8217;, and &#8216;resize_filter&#8217;
@@ -315,18 +315,19 @@ zoom files.  Do not include beginning or trailing directory separators.  If
 defined, but not actually created, your directory will be created for you.
 If left undefined, &#8216;deepzoom_images&#8217; is used as the default directory name.</p>
 <p>E.g. after prepending your media root, the default DEEPZOOM_ROOT is
-&#8216;/path/to/media_root/deepzoom_images/&#8217;</p>
+<em>&#8216;/path/to/media_root/deepzoom_images/&#8217;</em>.</p>
 <p>Or, if you define <tt class="docutils literal"><span class="pre">DEEPZOOM_ROOT='my/deepzoom/images'</span></tt>, the final path will be
-&#8216;/path/to/media_root/my/deepzoom/images/&#8217;</p>
+<em>&#8216;/path/to/media_root/my/deepzoom/images/&#8217;</em>.</p>
 </div>
 <div class="section" id="how-is-it-licensed">
 <h2><a class="toc-backref" href="#id5">How is it licensed?</a><a class="headerlink" href="#how-is-it-licensed" title="Permalink to this headline">¶</a></h2>
-<p>Django-deepzoom is BSD-licensed for full use with attribution to the author.</p>
+<p>Django-deepzoom is BSD-licensed for full, unfettered use as long as attribution
+is given to the author.</p>
 </div>
 <div class="section" id="how-can-i-leave-feedback">
 <h2><a class="toc-backref" href="#id6">How can I leave feedback?</a><a class="headerlink" href="#how-can-i-leave-feedback" title="Permalink to this headline">¶</a></h2>
-<p>Send questions, suggestions, comments to &lt;<a class="reference external" href="mailto:davidjcox&#46;at&#37;&#52;&#48;gmail&#46;com">davidjcox<span>&#46;</span>at<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;.
-Let me know if you&#8217;re successfully using Django-deepzoom for your project.</p>
+<p>Send questions, suggestions, comments to &lt;<a class="reference external" href="mailto:davidjcox&#46;at&#37;&#52;&#48;gmail&#46;com">davidjcox<span>&#46;</span>at<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;.</p>
+<p>Let me know if you&#8217;re successfully using Django-deepzoom for your project.</p>
 <p>Build good things.</p>
 </div>
 </div>
