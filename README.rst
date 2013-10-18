@@ -9,7 +9,8 @@ Sean Rice's JavaScript touch events into a set of model classes and template
 tags which programmatically generate tiled images and all JavaScript necessary 
 for their instantiation into templates.
 
-Detailed documentation is on ReadTheDocs.
+Detailed documentation is available on 
+`ReadTheDocs <http://django-deepzoom.readthedocs.org/en/latest/>`_.
 
 Run tests
 ---------
@@ -33,9 +34,9 @@ Quick start
 
 or, like this::
 
-    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-0.1.tar.gz
-    tar -xvf django-deepzoom-0.1.tar.gz
-    cd django-deepzoom-0.1
+    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-0.2.tar.gz
+    tar -xvf django-deepzoom-0.2.tar.gz
+    cd django-deepzoom-0.2
     python setup.py install
 
 2.) Add "deepzoom" to your INSTALLED_APPS setting like this::
