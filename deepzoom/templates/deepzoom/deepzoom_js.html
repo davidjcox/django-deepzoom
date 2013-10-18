@@ -1,0 +1,76 @@
+    {% load static %}
+    //Create deepzoom viewer.
+    var viewer = null;
+    //Initalize deepzoom viewer.
+    function init() {
+      viewer = new Seadragon.Viewer("{{ deepzoom_div_id }}");
+      viewer.addEventListener("open", afterCreation);
+      viewer.openDzi("{% get_media_prefix %}{{ deepzoom_object.deepzoom_image|safe }}",'{{ deepzoom_object.deepzoom_xml|safe }}');
+    }
+    //Attach touch events to deepzoom viewer.
+    function afterCreation(viewer) {
+      document.getElementsByTagName('canvas').item(0).addEventListener("touchstart",startMoving, false);
+      document.getElementsByTagName('canvas').item(0).addEventListener("gesturestart",startGesturing, false);
+    }
+    //The following SeaDragon touch events attributed to Sean Rice, 2010 
+    //[https://getsatisfaction.com/livelabs/topics/seadragon_ajax_on_the_iphone#reply_4514810]
+    function startMoving(e) {
+      e.preventDefault();
+      this.startX = e.targetTouches[0].clientX;
+      this.startY = e.targetTouches[0].clientY;
+      this.centerCoords = new Seadragon.Point(this.startX, this.startY);
+      if (e.targetTouches.length == 2){
+      this.centerCoords = Seadragon.Point(((this.startX+e.targetTouches[1].clientX) / 2), ( (this.startY+e.targetTouches[1].clientY) / 2));
+      } else {
+      this.currX = this.startX;
+      this.currY = this.startY;
+      this.addEventListener('touchmove', keepMoving, false);
+      this.addEventListener('touchend', stopMoving, false);
+      }
+    }
+    function keepMoving(e) {
+      e.preventDefault();
+      if (e.targetTouches.length != 1)
+      return false;
+      var delta = new Seadragon.Point((this.currX - e.targetTouches[0].clientX),(this.currY - e.targetTouches[0].clientY )); 
+      this.currX = e.targetTouches[0].clientX;
+      this.currY = e.targetTouches[0].clientY;
+      delta = viewer.viewport.deltaPointsFromPixels(delta);
+      viewer.viewport.panBy(delta);
+    }
+    function stopMoving(e) {
+      e.preventDefault();
+      viewer.viewport.applyConstraints();
+      this.removeEventListener('touchmove', this.touchMoveHandler, true);
+      this.removeEventListener('touchend', this.touchEndHandler, true);
+      return false;
+    }
+    function startGesturing(e) {
+      e.preventDefault();
+      this.startZoom = viewer.viewport.getZoom();
+      this.startPoint = new Seadragon.Point(e.position);
+      this.addEventListener('gesturechange', keepGesturing, false);
+      this.addEventListener('gestureend', stopGesturing, false);
+    }
+    function keepGesturing(e) {
+      e.preventDefault();
+      var zoomdelta = e.scale;
+      viewer.viewport.zoomTo((zoomdelta * this.startZoom), this.centerCoords);
+      return false;
+    }
+    function stopGesturing(e) {
+      e.preventDefault();
+      viewer.viewport.applyConstraints();
+      this.element.removeEventListener('gesturechange', this.gestureChangeHandler, true);
+      this.element.removeEventListener('gestureend', this.gestureEndHandler, true);
+      return false;
+    }
+    Seadragon.Utils.addEvent(window, "load", init);
+    //Force deepzoom modal to resize on orientation change.
+    function resizeViewer() {
+      if (viewer.isOpen()) {
+      viewer.viewport.goHome(true);
+      }
+    }
+    window.addEventListener("resize", resizeViewer, false);
+    window.addEventListener("orientationchange", resizeViewer, false);
