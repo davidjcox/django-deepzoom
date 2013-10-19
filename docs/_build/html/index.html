@@ -233,9 +233,9 @@ a &lt;script&gt; block in the body like this:</p>
 </div>
 <p>Neither the deep zoom queryset object nor the deep zoom div ID have to be named
 like in the example.  Any name can be given to either, so long as the deep zoom
-queryset object is named the same way in the template as it is in the view
-providing it and the deep zoom div ID matches the name is passed deepzoom_js
-template tag.</p>
+queryset object name used in the template matches the queryset object name used
+in the view providing it and the deep zoom div ID matches the name passed to the
+deepzoom_js template tag.</p>
 <p>8.) Run <cite>python manage.py collectstatic</cite> to collect your static files into
 STATIC_ROOT, specifically so that the seadragon-min.js file is available.</p>
 <p>9.) Start the development server and visit <cite>http://127.0.0.1:8000/admin/</cite> to
@@ -262,12 +262,14 @@ be <em>&#8216;/path/to/media_root/my/uploaded/images/&#8217;</em>.</p>
 &#8216;tile_size&#8217;, &#8216;tile_overlap&#8217;, &#8216;tile_format&#8217;, &#8216;image_quality&#8217;, and &#8216;resize_filter&#8217;
 in order.
 If undefined, <tt class="docutils literal"><span class="pre">[256,</span> <span class="pre">1,</span> <span class="pre">&quot;jpg&quot;,</span> <span class="pre">0.85,</span> <span class="pre">&quot;antialias&quot;]</span></tt> is used by default.</p>
-<dl class="docutils">
-<dt><em>tile_size</em></dt>
-<dd><p class="first">type: int
-options: 1 to maxint
-default: 256</p>
-<p class="last">The tile_size defines the size of tiles that each image on a pyramid level
+<p><em>tile_size</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>type: int</li>
+<li>options: 1 to maxint</li>
+<li>default: 256</li>
+</ul>
+<p>The tile_size defines the size of tiles that each image on a pyramid level
 will be subdivided into and re-sized for the next pyramid level.  The
 smaller the size, the deeper the overall zoom.  However, as the tile size
 approaches one, the number of tiles per level increases to the limit of
@@ -277,38 +279,63 @@ the number of pixels of the largest side of the original image,
 the number of tiles approaches one, eliminating the zoom effect completely.
 The most useful range is roughly 1/10 - 1/4 the size of the largest side of
 the original image.</p>
-</dd>
-<dt><em>tile_overlap</em></dt>
-<dd><p class="first">type: int
-options: 0 to 10
-default: 1</p>
-<p class="last">The tile_overlap defines the number of pixels a tile overlaps its
+</div></blockquote>
+<p><em>tile_overlap</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>type: int</li>
+<li>options: 0 to 10</li>
+<li>default: 1</li>
+</ul>
+<p>The tile_overlap defines the number of pixels a tile overlaps its
 neighboring tiles on each pyramid level.  As tile overlap is decreased, the
 total number of tiles generated potentially reduces, and as tile overlap is
 increased, the total number of tiles generated potentially increases.  If
 set to zero, gapping between tiles may be visible when zoomed.</p>
-</dd>
-<dt><em>tile_format</em></dt>
-<dd><p class="first">type: str
-options: &#8216;jpg&#8217; or &#8216;png&#8217;
-default: &#8216;jpg&#8217;</p>
-<p class="last">The tile_format determines the final image type of the generated tiled
+</div></blockquote>
+<p><em>tile_format</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>type: str</li>
+<li>options: &#8216;jpg&#8217; or &#8216;png&#8217;</li>
+<li>default: &#8216;jpg&#8217;</li>
+</ul>
+<p>The tile_format determines the final image type of the generated tiled
 images.  The usual image format considerations apply.  Generally, JPEG is
 better suited for photographs and realistic images, whereas PNG is better
 suited for line drawings or text.  If file size and bandwidth is not a
 concern, PNG will be superior because it is a lossless compression format.</p>
-</dd>
-<dt><cite>resize_filter</cite></dt>
-<dd><p class="first">type: str
-options: &#8216;cubic&#8217;, &#8216;bilinear&#8217;, &#8216;bicubic&#8217;, &#8216;nearest&#8217;, or &#8216;antialias&#8217;
-default: &#8216;antialias&#8217;</p>
-<p class="last">The resize_filter is the method used to re-sample images when resizing them
+</div></blockquote>
+<p><em>image_quality</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>type: float</li>
+<li>options: 0.00 to 1.00</li>
+<li>default: 0.85</li>
+</ul>
+<p>The image_quality setting pertains only if tile_format is set to &#8216;jpg&#8217;,
+because it is a JPEG setting.  It will not influence anything if tile_format
+is set to &#8216;png&#8217; because PNGs do not care about it.  (JPEGs are so special...)
+It specifies the quality of JPEG image conversion.  Lower settings produce
+grainier images of smaller file size while higher settings produce sharper
+images of larger size.  General consensus is that the average viewer is
+unable to detect quality improvements at settings above 0.80 (80%).  However,
+since this is a re-sampling of an already-compressed image in most
+circumstances, it seemed prudent to set the default higher.  Experiment.</p>
+</div></blockquote>
+<p><em>resize_filter</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>type: str</li>
+<li>options: &#8216;cubic&#8217;, &#8216;bilinear&#8217;, &#8216;bicubic&#8217;, &#8216;nearest&#8217;, or &#8216;antialias&#8217;</li>
+<li>default: &#8216;antialias&#8217;</li>
+</ul>
+<p>The resize_filter is the method used to re-sample images when resizing them
 during tile creation.  Different filters are better suited for certain tasks.
 The &#8216;antialias&#8217; filter trades off highest quality for slowest speed of
 creation.  Since tiled image generation is a one-time expense, it&#8217;s a
 reasonable tradeoff for the default.</p>
-</dd>
-</dl>
+</div></blockquote>
 <p><strong>DEEPZOOM_ROOT</strong></p>
 <p>A string defining the directory to be appended to MEDIA_ROOT for storing deep
 zoom files.  Do not include beginning or trailing directory separators.  If

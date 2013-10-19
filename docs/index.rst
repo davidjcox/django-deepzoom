@@ -206,9 +206,9 @@ a <script> block in the body like this::
 
 Neither the deep zoom queryset object nor the deep zoom div ID have to be named 
 like in the example.  Any name can be given to either, so long as the deep zoom 
-queryset object is named the same way in the template as it is in the view 
-providing it and the deep zoom div ID matches the name is passed deepzoom_js 
-template tag.
+queryset object name used in the template matches the queryset object name used 
+in the view providing it and the deep zoom div ID matches the name passed to the 
+deepzoom_js template tag.
 
 8.) Run `python manage.py collectstatic` to collect your static files into 
 STATIC_ROOT, specifically so that the seadragon-min.js file is available.
@@ -247,9 +247,10 @@ in order.
 If undefined, ``[256, 1, "jpg", 0.85, "antialias"]`` is used by default.
 
 *tile_size*
-    type: int
-    options: 1 to maxint
-    default: 256
+
+    * type: int
+    * options: 1 to maxint
+    * default: 256
     
     The tile_size defines the size of tiles that each image on a pyramid level 
     will be subdivided into and re-sized for the next pyramid level.  The 
@@ -264,9 +265,10 @@ If undefined, ``[256, 1, "jpg", 0.85, "antialias"]`` is used by default.
 
 
 *tile_overlap*
-    type: int
-    options: 0 to 10
-    default: 1
+
+    * type: int
+    * options: 0 to 10
+    * default: 1
     
     The tile_overlap defines the number of pixels a tile overlaps its 
     neighboring tiles on each pyramid level.  As tile overlap is decreased, the 
@@ -276,9 +278,10 @@ If undefined, ``[256, 1, "jpg", 0.85, "antialias"]`` is used by default.
 
 
 *tile_format*
-    type: str
-    options: 'jpg' or 'png'
-    default: 'jpg'
+
+    * type: str
+    * options: 'jpg' or 'png'
+    * default: 'jpg'
     
     The tile_format determines the final image type of the generated tiled 
     images.  The usual image format considerations apply.  Generally, JPEG is  
@@ -287,10 +290,27 @@ If undefined, ``[256, 1, "jpg", 0.85, "antialias"]`` is used by default.
     concern, PNG will be superior because it is a lossless compression format. 
 
 
-`resize_filter`
-    type: str
-    options: 'cubic', 'bilinear', 'bicubic', 'nearest', or 'antialias'
-    default: 'antialias'
+*image_quality*
+
+    * type: float
+    * options: 0.00 to 1.00
+    * default: 0.85
+    
+    The image_quality setting pertains only if tile_format is set to 'jpg', 
+    because it is a JPEG setting.  It will not influence anything if tile_format 
+    is set to 'png' because PNGs do not care about it.  (JPEGs are so special...)  
+    It specifies the quality of JPEG image conversion.  Lower settings produce 
+    grainier images of smaller file size while higher settings produce sharper 
+    images of larger size.  General consensus is that the average viewer is 
+    unable to detect quality improvements at settings above 0.80 (80%).  However, 
+    since this is a re-sampling of an already-compressed image in most 
+    circumstances, it seemed prudent to set the default higher.  Experiment.
+
+*resize_filter*
+
+    * type: str
+    * options: 'cubic', 'bilinear', 'bicubic', 'nearest', or 'antialias'
+    * default: 'antialias'
     
     The resize_filter is the method used to re-sample images when resizing them 
     during tile creation.  Different filters are better suited for certain tasks.  
