@@ -130,9 +130,9 @@ class DeepZoom(models.Model):
                 try:
                     os.makedirs(dz_mediaroot)
                 except OSError as err:
-                    print ("OS error({0}): {1}".format(err.errno, err.strerror))
+                    print "OS error({0}): {1}".format(err.errno, err.strerror)
                 except IOError as err:
-                    print ("I/O error({0}): {1}".format(err.errno, err.strerror))
+                    print "I/O error({0}): {1}".format(err.errno, err.strerror)
                 except:
                     raise
             
@@ -145,11 +145,11 @@ class DeepZoom(models.Model):
             try:
                 creator.create(self.associated_image, dz_fullfilename)
             except OSError as err:
-                print ("OS error({0}): {1}".format(err.errno, err.strerror))
+                print "OS error({0}): {1}".format(err.errno, err.strerror)
             except IOError as err:
-                print ("I/O error({0}): {1}".format(err.errno, err.strerror))
+                print "I/O error({0}): {1}".format(err.errno, err.strerror)
             except:
-                print ("Unexpected deep zoom creation error:", sys.exc_info())
+                print "Unexpected deep zoom creation error:", sys.exc_info()
                 raise
 
             self.deepzoom_image = dz_relfilename
@@ -160,7 +160,7 @@ class DeepZoom(models.Model):
                 with codecs.open(dz_fullfilename, "r", "utf-8-sig") as dz_file:
                     self.deepzoom_xml = dz_file.read()
             except IOError as err:
-                print ("I/O error({0}): {1}".format(err.errno, err.strerror))
+                print "I/O error({0}): {1}".format(err.errno, err.strerror)
         
         super(DeepZoom, self).save(*args, **kwargs)
     

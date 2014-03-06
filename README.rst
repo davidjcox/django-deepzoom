@@ -12,6 +12,19 @@ for their instantiation into templates.
 Detailed documentation is available on 
 `ReadTheDocs <http://django-deepzoom.readthedocs.org/en/latest/>`_.
 
+:Author:    David J Cox
+
+:Contact:   davidjcox.at@gmail.com
+
+:Version:   0.3
+
+Let me know what you think of django-deepzoom.  Share your site (or sites) that use it.  I'm curious.  Cool.
+
+.. important:: 
+    This latest version, django-deepzoom 0.3, will be the last Python 2 version.
+
+    The next version will be Python 3 compatible, which will mainly involve modifying the deepzoom module to use Pillow instead of PIL, and will be bumped up to 1.0.
+
 Run tests
 ---------
 After django-deepzoom has been installed, you may want to sanity check it by running tests, like this::
@@ -21,7 +34,9 @@ After django-deepzoom has been installed, you may want to sanity check it by run
 .. attention::
         Some of the negative tests are intended to throw exceptions.  The error text will display mixed in with the test results.  THAT IS EXPECTED!
 
-        If the end result is **OK** then all tests have passed.  Enjoy.
+        If the end result is **OK** then all tests have passed.
+
+        Enjoy.
 
 
 Quick start
@@ -34,9 +49,9 @@ Quick start
 
 or, like this::
 
-    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-0.2.tar.gz
-    tar -xvf django-deepzoom-0.2.tar.gz
-    cd django-deepzoom-0.2
+    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-0.3.tar.gz
+    tar -xvf django-deepzoom-0.3.tar.gz
+    cd django-deepzoom-0.3
     python setup.py install
 
 2.) Add "deepzoom" to your INSTALLED_APPS setting like this::
