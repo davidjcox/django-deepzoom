@@ -1,5 +1,5 @@
 ===============
-django-deepzoom
+Django-deepzoom
 ===============
 
 Django-deepzoom is a drop-in Django app for the creation and use of Deep Zoom 
@@ -13,20 +13,40 @@ Detailed documentation is available on http://django-deepzoom.readthedocs.org/en
 
 Author:    David J Cox
 
-Contact:   davidjcox.at@gmail.com
+Contact:   <davidjcox.at@gmail.com>
 
 Version:   0.3
 
-Let me know what you think of django-deepzoom.  Share your site (or sites) that use it.  I'm curious.  Cool.
+Let me know what you think of Django-deepzoom.  Share your site (or sites) that use it.  I'm curious.  Cool.
 
-    IMPORTANT: 
-        This latest version, django-deepzoom 0.3, will be the last Python 2 version.
+What's New?
+-----------
 
-        The next version will be Python 3 compatible, which will mainly involve modifying the deepzoom module to use Pillow instead of PIL, and will be bumped up to 1.0.
+Django-deepzoom has been ported to Python 3 and Django 1.6.  Both ports required 
+introducing backwards-incompatible changes that have been resolved, for now, with 
+separate Django-deepzoom releases.  In the future a unified version will be
+attempted.
+
+Porting to Python 3 involved replacing PIL with Pillow, ensuring uniform Unicode 
+string-handling, converting to new function calls, and updating the test code.
+
+Porting to Django 1.6 mainly involved converting the test code to handle the new 
+default database autocommit behavior.  Tests designed to force errors and exceptions 
+had to be wrapped in transaction.commit() to avoid halting the testrunner.
+
+To accommodate these inflection points, three Django-deepzoom releases are available:
+
+- Version 0.3 is compatible with Python 2 and Django pre-1.6.
+
+- Version 0.4 is compatible with Python 2 and Django 1.6+.
+
+- Version 1.0 is compatible with Python 3 and Django 1.6+.
+
+A summary table is provided in the installation section below...
 
 Run tests
 ---------
-After django-deepzoom has been installed, you may want to sanity check it by 
+After Django-deepzoom has been installed, you may want to sanity check it by 
 running tests, like this:
 
     python manage.py test deepzoom --settings=deepzoom.test.test_settings
@@ -43,9 +63,9 @@ running tests, like this:
 Quick start
 -----------
 
-1.) Install "django-deepzoom" like this:
+1.) Install Django-deepzoom like this:
 
-    pip install -U django-deepzoom
+    pip install "django-deepzoom==0.3"
 
 
 or, like this:
@@ -60,6 +80,9 @@ or, like this:
     (in settings.py)
       
     INSTALLED_APPS = (
+		'django.contrib.auth',
+        'django.contrib.staticfiles',
+        'django.contrib.admin', 
         ...
         'deepzoom',
         ...
@@ -78,7 +101,7 @@ or, like this:
       '''
       pass
 
-4.) Run `python manage.py syncdb` to create the django-deepzoom models.
+4.) Run `python manage.py syncdb` to create the Django-deepzoom models.
 
 5.) Add an appropriate URL to your Urlconf, something like this::
 
