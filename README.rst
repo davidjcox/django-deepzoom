@@ -43,7 +43,7 @@ To accommodate these inflection points, three Django-deepzoom releases are avail
 
 - Version 1.0 is compatible with Python 3 and Django 1.6+.
 
-A summary table is provided in the installation section below...
+A summary table is provided in the Quick start section below...
 
 Run tests
 ---------
@@ -62,6 +62,19 @@ After Django-deepzoom has been installed, you may want to sanity check it by run
 Quick start
 -----------
 
+Before you begin, choose the Django-deepzoom version that's compatible with the versions of Python and Django you're using:
+
+	+--------+------------+-----------------+
+	| Python |   Django   | Django-deepzoom |
+	+========+============+=================+
+	|   2    |  pre-1.6   |       0.3       |
+	+--------+------------+-----------------+
+	|   2    |    1.6+    |       0.4       |
+	+--------+------------+-----------------+
+	|   3    |    1.6+    |       1.0       |
+	+--------+------------+-----------------+
+
+																																												.
 1.) Install Django-deepzoom like this::
 
     pip install "django-deepzoom==0.3"
