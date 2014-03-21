@@ -74,7 +74,7 @@ Before you begin, choose the Django-deepzoom version that's compatible with the 
 	|   3    |    1.6+    |       1.0       |
 	+--------+------------+-----------------+
 
-																																												.
+
 1.) Install Django-deepzoom like this::
 
     pip install "django-deepzoom==0.3"
