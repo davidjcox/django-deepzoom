@@ -28,7 +28,7 @@ string-handling, converting to new function calls, and updating the test code.
 
 Porting to Django 1.6 mainly involved converting the test code to handle the new 
 default database autocommit behavior.  Tests designed to force errors and exceptions 
-had to be wrapped in transaction.commit() to avoid halting the testrunner.
+had to be wrapped in transaction.atomic() to avoid halting the testrunner.
 
 To accommodate these inflection points, three Django-deepzoom releases are available:
 
@@ -163,9 +163,6 @@ Change <VERSION> to one of the available version numbers, of course.  Installing
       
     INSTALLED_APPS = (
         'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.messages',
         'django.contrib.staticfiles',
         'django.contrib.admin', 
         ...

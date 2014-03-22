@@ -33,7 +33,7 @@ string-handling, converting to new function calls, and updating the test code.
 
 Porting to Django 1.6 mainly involved converting the test code to handle the new 
 default database autocommit behavior.  Tests designed to force errors and exceptions 
-had to be wrapped in transaction.commit() to avoid halting the testrunner.
+had to be wrapped in transaction.atomic() to avoid halting the testrunner.
 
 To accommodate these inflection points, three Django-deepzoom releases are available:
 
