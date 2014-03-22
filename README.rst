@@ -16,7 +16,7 @@ Detailed documentation is available on
 
 :Contact:   <davidjcox.at@gmail.com>
 
-:Version:   0.3
+:Version:   0.4
 
 Let me know what you think of Django-deepzoom.  Share your site (or sites) that use it.  I'm curious.  Cool.
 
@@ -77,14 +77,14 @@ Before you begin, choose the Django-deepzoom version that's compatible with the 
 
 1.) Install Django-deepzoom like this::
 
-    pip install "django-deepzoom==0.3"
+    pip install "django-deepzoom==0.4"
 
 
 or, like this::
 
-    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-0.3.tar.gz
-    tar -xvf django-deepzoom-0.3.tar.gz
-    cd django-deepzoom-0.3
+    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-0.4.tar.gz
+    tar -xvf django-deepzoom-0.4.tar.gz
+    cd django-deepzoom-0.4
     python setup.py install
 
 2.) Add "deepzoom" to your INSTALLED_APPS setting like this::

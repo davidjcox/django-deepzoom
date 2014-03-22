@@ -2,6 +2,7 @@
 from django.test import TestCase, SimpleTestCase
 from django.db import models
 from django.conf import settings
+from django.db import transaction
 from django.db import IntegrityError
 from django.test.utils import override_settings
 from django.template import Template, Context, TemplateSyntaxError
@@ -192,7 +193,8 @@ class CreateImageOnlyTestCase(TestCase):
             test_img1 = TestImage.objects.create(uploaded_image=image, 
                                                  name=test_object_name)
             with self.assertRaises(IntegrityError):
-                test_img2 = TestImage.objects.create(uploaded_image=image, 
+				with transaction.atomic():
+					test_img2 = TestImage.objects.create(uploaded_image=image, 
                                                      name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
@@ -317,7 +319,8 @@ class DeleteImageTestCase(TestCase):
         self.assertTrue(os.path.isfile(img_path))
         test_img.delete()
         with self.assertRaises(TestImage.DoesNotExist):
-            test_img = TestImage.objects.get(name=test_object_name)
+			with transaction.atomic():
+				test_img = TestImage.objects.get(name=test_object_name)
         self.assertFalse(os.path.isfile(img_path))
     
     
@@ -332,7 +335,8 @@ class DeleteImageTestCase(TestCase):
             os.remove(img_path)
         test_img.delete()
         with self.assertRaises(TestImage.DoesNotExist):
-            test_img = TestImage.objects.get(name=test_object_name)
+			with transaction.atomic():
+				test_img = TestImage.objects.get(name=test_object_name)
         self.assertFalse(os.path.isfile(img_path))
     
     
@@ -346,7 +350,8 @@ class DeleteImageTestCase(TestCase):
             test_img.delete()
         for test_img in test_imgs:
             with self.assertRaises(TestImage.DoesNotExist):
-                TestImage.objects.get(name=test_img.name)
+				with transaction.atomic():
+					TestImage.objects.get(name=test_img.name)
         for img_path in img_paths:
             self.assertFalse(os.path.isfile(img_path))
     
@@ -569,7 +574,8 @@ class CreateDeepZoomTestCase(TestCase):
         self.assertFalse(test_img.deepzoom_already_created)
         #self.assertIsNone(test_img.associated_deepzoom)
         with self.assertRaises(DeepZoom.DoesNotExist):
-            DeepZoom.objects.get(name=test_object_name)
+			with transaction.atomic():
+				DeepZoom.objects.get(name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
     
@@ -685,7 +691,8 @@ class CreateDeepZoomTestCase(TestCase):
         self.assertFalse(test_img.deepzoom_already_created)
         #self.assertIsNone(test_img.associated_deepzoom)
         with self.assertRaises(DeepZoom.DoesNotExist):
-            DeepZoom.objects.get(name=test_object_name)
+			with transaction.atomic():
+				DeepZoom.objects.get(name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
     
@@ -716,7 +723,8 @@ class CreateDeepZoomTestCase(TestCase):
         self.assertFalse(test_img.deepzoom_already_created)
         #self.assertIsNone(test_img.associated_deepzoom)
         with self.assertRaises(DeepZoom.DoesNotExist):
-            DeepZoom.objects.get(name=test_object_name)
+			with transaction.atomic():
+				DeepZoom.objects.get(name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
     
@@ -875,7 +883,8 @@ class CreateDeepZoomTestCase(TestCase):
         self.assertFalse(test_img.deepzoom_already_created)
         #self.assertIsNone(test_img.associated_deepzoom)
         with self.assertRaises(DeepZoom.DoesNotExist):
-            DeepZoom.objects.get(name=test_object_name)
+			with transaction.atomic():
+				DeepZoom.objects.get(name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
     
@@ -1413,9 +1422,10 @@ class CreateDeepZoomTestCase(TestCase):
                                              name=self.test_object_name, 
                                              create_deepzoom=False)
         with self.assertRaises(IntegrityError):
-            test_dz2 = DeepZoom(associated_image=test_img2.uploaded_image.path, 
-                                name=test_img1.name)
-            test_dz2.save()
+			with transaction.atomic():
+				test_dz2 = DeepZoom(associated_image=test_img2.uploaded_image.path, 
+									name=test_img1.name)
+				test_dz2.save()
         reSet(settings.MEDIA_ROOT)
     
     
@@ -1662,7 +1672,8 @@ class DeleteDeepZoomTestCase(TestCase):
         self.assertTrue(os.path.isfile(dz_file))
         test_dz.delete()
         with self.assertRaises(DeepZoom.DoesNotExist):
-            test_dz = DeepZoom.objects.get(name=test_object_name)
+			with transaction.atomic():
+				test_dz = DeepZoom.objects.get(name=test_object_name)
         self.assertFalse(os.path.isdir(dz_path))
         self.assertFalse(os.path.isfile(dz_file))
         reSet(settings.MEDIA_ROOT)
@@ -1680,7 +1691,8 @@ class DeleteDeepZoomTestCase(TestCase):
             shutil.rmtree(dz_path)
         test_dz.delete()
         with self.assertRaises(DeepZoom.DoesNotExist):
-            test_dz = DeepZoom.objects.get(name=test_object_name)
+			with transaction.atomic():
+				test_dz = DeepZoom.objects.get(name=test_object_name)
         self.assertFalse(os.path.isdir(dz_path))
         reSet(settings.MEDIA_ROOT)
     
@@ -1697,7 +1709,8 @@ class DeleteDeepZoomTestCase(TestCase):
             test_dz.delete()
         for test_dz in test_dzs:
             with self.assertRaises(DeepZoom.DoesNotExist):
-                DeepZoom.objects.get(name=test_dz.name)
+				with transaction.atomic():
+					DeepZoom.objects.get(name=test_dz.name)
         for dz_path in dz_paths:
             self.assertFalse(os.path.isdir(dz_path))
         reSet(settings.MEDIA_ROOT)
