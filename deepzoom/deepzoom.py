@@ -37,19 +37,19 @@
 import math
 import optparse
 import os
-import PIL.Image
+from PIL import Image as PILImage
 import sys
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import xml.dom.minidom
 
 NS_DEEPZOOM = "http://schemas.microsoft.com/deepzoom/2008"
 
 resize_filter_map = {
-    "cubic": PIL.Image.CUBIC,
-    "bilinear": PIL.Image.BILINEAR,
-    "bicubic": PIL.Image.BICUBIC,
-    "nearest": PIL.Image.NEAREST,
-    "antialias": PIL.Image.ANTIALIAS,
+    "cubic": PILImage.CUBIC,
+    "bilinear": PILImage.BILINEAR,
+    "bicubic": PILImage.BICUBIC,
+    "nearest": PILImage.NEAREST,
+    "antialias": PILImage.ANTIALIAS,
     }
 
 image_format_map = {
@@ -94,7 +94,7 @@ class DZIDescriptor(object):
         size.setAttribute("Height", str(self.height))
         image.appendChild(size)
         doc.appendChild(image)
-        descriptor = doc.toxml(encoding="UTF-8")
+        descriptor = doc.toxml()#(encoding="UTF-8")
 #        descriptor = doc.toprettyxml(indent="    ", encoding="UTF-8")
 
         file.write(descriptor)
@@ -178,19 +178,19 @@ class ImageCreator(object):
         if self.descriptor.width == width and self.descriptor.height == height:
             return self.image
         if (self.resize_filter is None) or (self.resize_filter not in resize_filter_map):
-            return self.image.resize((width, height), PIL.Image.ANTIALIAS)
+            return self.image.resize((width, height), PILImage.ANTIALIAS)
         return self.image.resize((width, height), resize_filter_map[self.resize_filter])
 
     def tiles(self, level):
         """Iterator for all tiles in the given level. Returns (column, row) of a tile."""
         columns, rows = self.descriptor.get_num_tiles(level)
-        for column in xrange(columns):
-            for row in xrange(rows):
+        for column in range(columns):
+            for row in range(rows):
                 yield (column, row)
 
     def create(self, source, destination):
         """Creates Deep Zoom image from source file and saves it to destination."""
-        self.image = PIL.Image.open(source)
+        self.image = PILImage.open(source)
         width, height = self.image.size
         self.descriptor = DZIDescriptor(width=width,
                                         height=height,
@@ -203,7 +203,7 @@ class ImageCreator(object):
         image_files = _ensure(os.path.join(_ensure(dir_name), "%s_files"%image_name))
 
         # Create tiles
-        for level in xrange(self.descriptor.num_levels):
+        for level in range(self.descriptor.num_levels):
             level_dir = _ensure(os.path.join(image_files, str(level)))
             level_image = self.get_image(level)
             for (column, row) in self.tiles(level):
@@ -236,7 +236,7 @@ class CollectionCreator(object):
         """Returns position (column, row) from given Z-order (Morton number.)"""
         column = 0
         row = 0
-        for i in xrange(0, 32, 2):
+        for i in range(0, 32, 2):
             offset = i / 2
             # column
             column_offset = i
@@ -253,7 +253,7 @@ class CollectionCreator(object):
     def _get_z_order(self, column, row):
         """Returns the Z-order (Morton number) from given position."""
         z_order = 0
-        for i in xrange(32):
+        for i in range(32):
             z_order |= (column & 1 << i) << i | (row & 1 << i) << (i + 1)
         return z_order
 
@@ -274,24 +274,24 @@ class CollectionCreator(object):
         if not os.path.exists(pyramid_path):
             os.mkdir(pyramid_path)
 
-        for level in xrange(self.max_level + 1):
+        for level in range(self.max_level + 1):
             level_size = 2**level
             level_path = pyramid_path + "/" + str(level)
             if not os.path.exists(level_path):
                 os.mkdir(level_path)
 
-            for i in xrange(len(images)):
+            for i in range(len(images)):
                 path = images[i]
                 descriptor = DZIDescriptor()
                 descriptor.open(path)
                 column, row = self._get_tile_position(i, level, self.tile_size)
                 tile_path = level_path + "/%s_%s.%s"%(column, row, self.tile_format)
                 if not os.path.exists(tile_path):
-                    tile_image = PIL.Image.new("RGB", (self.tile_size, self.tile_size))
+                    tile_image = PILImage.new("RGB", (self.tile_size, self.tile_size))
                     tile_image.save(tile_path, "JPEG", quality=int(self.image_quality * 100))
-                tile_image = PIL.Image.open(tile_path)
+                tile_image = PILImage.open(tile_path)
                 source_path = open(os.path.splitext(path)[0] + "_files/" + str(level) + "/%s_%s.%s"%(0, 0, descriptor.tile_format))
-                source_image = PIL.Image.open(source_path)
+                source_image = PILImage.open(source_path)
                 images_per_tile = int(math.floor(self.tile_size / level_size))
                 column, row = self._get_position(i)
                 x = (column % images_per_tile) * level_size
@@ -392,7 +392,7 @@ def main():
     source = _expand(args[0])
 
     if not os.path.exists(source):
-        print "Invalid File", source
+        print("Invalid File", source)
         sys.exit(1)
 
     if not options.destination:

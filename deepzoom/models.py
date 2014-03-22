@@ -6,26 +6,40 @@ from django.contrib import admin
 import os
 import sys
 import codecs
-import string
+from string import punctuation as punctuation_marks
 import shutil
 
-import deepzoom
+from . import deepzoom
 
 
 #===============================================================================
 
 
-def slugify(_string_to_convert=None):
+def slugify(string_to_convert=None):
     '''
     Custom slug generator.
+    
+    Converts common separators ('-', '_', '.') into spaces, reduces consecutive 
+    
+    spaces to single spaces, deletes non-URL-compliant punctuation, lowercases,  
+    
+    strips leading spaces, and finally converts spaces into dashes.
+    
+    E.g. " Hey!  What is this.py? " --> "hey-what-is-this-py"
     '''
-    _valid_chars = "-() %s%s" % (string.ascii_letters, string.digits)
-    _valid_chars = frozenset(_valid_chars)
+    preserve_charmap = str.maketrans({'-': ' ', '_': ' ', '.': ' '})
     
-    _converted_string = string.join((c for c in _string_to_convert if c in \
-    _valid_chars), '').lower().replace(' ', '-')
+    invalid_charmap = str.maketrans(dict(zip(punctuation_marks, [None] * 32)))
     
-    return(_converted_string)
+    substituted_string = string_to_convert.translate(preserve_charmap)
+    
+    reduced_string = ' '.join(substituted_string.split())
+    
+    translated_string = reduced_string.translate(invalid_charmap)
+    
+    converted_string = translated_string.strip().lower().replace(' ', '-')
+    
+    return(converted_string)
 #end slugify 
 
 
@@ -130,9 +144,9 @@ class DeepZoom(models.Model):
                 try:
                     os.makedirs(dz_mediaroot)
                 except OSError as err:
-                    print "OS error({0}): {1}".format(err.errno, err.strerror)
+                    print("OS error({0}): {1}".format(err.errno, err.strerror))
                 except IOError as err:
-                    print "I/O error({0}): {1}".format(err.errno, err.strerror)
+                    print("I/O error({0}): {1}".format(err.errno, err.strerror))
                 except:
                     raise
             
@@ -145,11 +159,11 @@ class DeepZoom(models.Model):
             try:
                 creator.create(self.associated_image, dz_fullfilename)
             except OSError as err:
-                print "OS error({0}): {1}".format(err.errno, err.strerror)
+                print("OS error({0}): {1}".format(err.errno, err.strerror))
             except IOError as err:
-                print "I/O error({0}): {1}".format(err.errno, err.strerror)
+                print("I/O error({0}): {1}".format(err.errno, err.strerror))
             except:
-                print "Unexpected deep zoom creation error:", sys.exc_info()
+                print("Unexpected deep zoom creation error:", sys.exc_info())
                 raise
 
             self.deepzoom_image = dz_relfilename
@@ -160,7 +174,7 @@ class DeepZoom(models.Model):
                 with codecs.open(dz_fullfilename, "r", "utf-8-sig") as dz_file:
                     self.deepzoom_xml = dz_file.read()
             except IOError as err:
-                print "I/O error({0}): {1}".format(err.errno, err.strerror)
+                print("I/O error({0}): {1}".format(err.errno, err.strerror))
         
         super(DeepZoom, self).save(*args, **kwargs)
     
@@ -175,7 +189,7 @@ class DeepZoom(models.Model):
     
     
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return '%s' % (self.name)
 #end DeepZoom
 
 
@@ -275,11 +289,11 @@ class UploadedImage(models.Model):
             except (TypeError, ValueError):
                 # self.associated_deepzoom = None
                 self.deepzoom_already_created = False
-                print "Error: Incorrect deep zoom parameter(s) in settings.py."
+                print("Error: Incorrect deep zoom parameter(s) in settings.py.")
             except:
                 # self.associated_deepzoom = None
                 self.deepzoom_already_created = False
-                print "Unexpected error creating deep zoom:{0}".format(sys.exc_info()[1:2])
+                print("Unexpected error creating deep zoom:{0}".format(sys.exc_info()[1:2]))
                 raise
                 
     
@@ -293,7 +307,7 @@ class UploadedImage(models.Model):
     
     
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return '%s' % (self.name)
 #end UploadedImage
 
 

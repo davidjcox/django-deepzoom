@@ -28,6 +28,8 @@ VALID_DEEPZOOM_PARAMS = ['379', 2, 'png', 0.9, 'bicubic']
 
 TEST_FILE_UNKNOWN = 'test_data/test_file.tst'
 
+TEST_IMAGE_INVALID = 'test_data/test_image_INVALID.jpg'
+
 TEST_IMAGE_PORTRAIT = 'test_data/test_img_PORTRAIT.jpg'
 TEST_IMAGE_PORTRAIT_WIDTH = 500
 TEST_IMAGE_PORTRAIT_HEIGHT = 685
@@ -83,7 +85,7 @@ def max_chars(_num_chars=None):
     Returns a string of requested size in the form of 
         zero-filled + number-of-characters.
     '''
-    return string.zfill(_num_chars, _num_chars)
+    return str.zfill(str(_num_chars), _num_chars)
 #end max_chars
 
 
@@ -92,7 +94,7 @@ def simulate_uploaded_file(_path=None):
     Reads a local test file into a SimpleUploadedFile form so that it can be 
         processed by the model-under-test as if it actually had been uploaded.
     '''
-    _file = open(_path)
+    _file = open(_path, mode='rb')
     _content = _file.read()
     _file.close()
     _mime = mime.guess_type(_path)
@@ -115,8 +117,11 @@ class CreateImageOnlyTestCase(TestCase):
         test_object_name = 'test_img_1.1'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, DEFAULT_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -140,8 +145,11 @@ class CreateImageOnlyTestCase(TestCase):
             test_object_name = 'test_img_1.2'
             image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
             image = simulate_uploaded_file(image_path)
-            test_img = TestImage.objects.create(uploaded_image=image, 
-                                                name=test_object_name)
+            try:
+                test_img = TestImage.objects.create(uploaded_image=image, 
+                                                    name=test_object_name)
+            except:
+                raise
             media_dir, img_file = os.path.split(test_img.uploaded_image.name)
             self.assertEqual(media_dir, '')
             self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -166,8 +174,11 @@ class CreateImageOnlyTestCase(TestCase):
             test_object_name = 'test_img_1.3'
             image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
             image = simulate_uploaded_file(image_path)
-            test_img = TestImage.objects.create(uploaded_image=image, 
-                                                name=test_object_name)
+            try:
+                test_img = TestImage.objects.create(uploaded_image=image, 
+                                                    name=test_object_name)
+            except:
+                raise
             media_dir, img_file = os.path.split(test_img.uploaded_image.name)
             self.assertEqual(media_dir, max_char_string)
             self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -190,12 +201,15 @@ class CreateImageOnlyTestCase(TestCase):
         with self.settings(UPLOADEDIMAGE_ROOT = VALID_UPLOADEDIMAGE_ROOT):
             image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
             image = simulate_uploaded_file(image_path)
-            test_img1 = TestImage.objects.create(uploaded_image=image, 
-                                                 name=test_object_name)
-            with self.assertRaises(IntegrityError):
-				with transaction.atomic():
-					test_img2 = TestImage.objects.create(uploaded_image=image, 
+            try:
+                test_img1 = TestImage.objects.create(uploaded_image=image, 
                                                      name=test_object_name)
+            except:
+                raise
+            with self.assertRaises(IntegrityError):
+                with transaction.atomic():
+                    test_img2 = TestImage.objects.create(uploaded_image=image, 
+                                                         name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
     
@@ -207,8 +221,11 @@ class CreateImageOnlyTestCase(TestCase):
             test_object_name = 'test_img_1.5'
             image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
             image = simulate_uploaded_file(image_path)
-            test_img = TestImage.objects.create(uploaded_image=image, 
-                                                name=test_object_name)
+            try:
+                test_img = TestImage.objects.create(uploaded_image=image, 
+                                                    name=test_object_name)
+            except:
+                raise
             media_dir, img_file = os.path.split(test_img.uploaded_image.name)
             self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
             self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -232,8 +249,11 @@ class CreateImageOnlyTestCase(TestCase):
             test_object_name = 'test_img_1.6'
             image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
             image = simulate_uploaded_file(image_path)
-            test_img = TestImage.objects.create(uploaded_image=image, 
-                                                name=test_object_name)
+            try:
+                test_img = TestImage.objects.create(uploaded_image=image, 
+                                                    name=test_object_name)
+            except:
+                raise
             media_dir, img_file = os.path.split(test_img.uploaded_image.name)
             self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
             self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -257,8 +277,11 @@ class CreateImageOnlyTestCase(TestCase):
             test_object_name = 'test_img_1.7'
             image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_SQUARE)
             image = simulate_uploaded_file(image_path)
-            test_img = TestImage.objects.create(uploaded_image=image, 
-                                                name=test_object_name)
+            try:
+                test_img = TestImage.objects.create(uploaded_image=image, 
+                                                    name=test_object_name)
+            except:
+                raise
             media_dir, img_file = os.path.split(test_img.uploaded_image.name)
             self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
             self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -272,6 +295,30 @@ class CreateImageOnlyTestCase(TestCase):
             deepzoom_dir = os.path.join(settings.MEDIA_ROOT, DEFAULT_DEEPZOOM_ROOT)
             self.assertFalse(os.path.exists(deepzoom_dir))
         reSet(settings.MEDIA_ROOT)
+        
+        
+    def test_create_image_with_invalid_uploaded_image_file(self):
+        '''
+        1.8) Test UploadedImage creation with invalid image file uploaded.
+        '''
+        with self.settings(UPLOADEDIMAGE_ROOT = VALID_UPLOADEDIMAGE_ROOT):
+            test_object_name = 'test_img_1.8'
+            image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_INVALID)
+            image = simulate_uploaded_file(image_path)
+            with self.assertRaises(TypeError):
+                with transaction.atomic():
+                    test_img = TestImage.objects.create(uploaded_image=image, 
+                                                        name=test_object_name)
+            img_dir, img_name = TEST_IMAGE_INVALID.split('/')
+            img_path = os.path.join(settings.MEDIA_ROOT, VALID_UPLOADEDIMAGE_ROOT)
+            img_file = os.path.join(settings.MEDIA_ROOT, VALID_UPLOADEDIMAGE_ROOT, img_name)
+            self.assertFalse(os.path.isdir(img_path))
+            self.assertFalse(os.path.isfile(img_file))
+            dz_path = os.path.join(settings.MEDIA_ROOT, VALID_DEEPZOOM_ROOT, test_object_name)
+            dz_file = os.path.join(dz_path, test_object_name + '.dzi')
+            self.assertFalse(os.path.isdir(dz_path))
+            self.assertFalse(os.path.isfile(dz_file))
+        reSet(settings.MEDIA_ROOT)
     
     
     def suite():
@@ -284,7 +331,7 @@ class CreateImageOnlyTestCase(TestCase):
                  'test_create_portrait_image_with_valid_settings_defined', 
                  'test_create_square_image_with_valid_settings_defined']
 
-        return unittest.TestSuite(map(CreateImageOnlyTestCase, tests))
+        return unittest.TestSuite(list(map(CreateImageOnlyTestCase, tests)))
 # #end CreateImageOnlyTestCase
 
 
@@ -299,13 +346,19 @@ class DeleteImageTestCase(TestCase):
             for num in range(6):
                 self.test_object_name = 'test_img_2.' + str(num)
                 image = simulate_uploaded_file(image_path)
-                TestImage.objects.create(uploaded_image=image, 
-                                         name=self.test_object_name)
+                try:
+                    TestImage.objects.create(uploaded_image=image, 
+                                             name=self.test_object_name)
+                except:
+                    raise
     
     
     def tearDown(self):
         for test_img in TestImage.objects.all():
-            test_img.delete()
+            try:
+                test_img.delete()
+            except:
+                raise
         reSet(settings.MEDIA_ROOT)
     
     
@@ -319,8 +372,8 @@ class DeleteImageTestCase(TestCase):
         self.assertTrue(os.path.isfile(img_path))
         test_img.delete()
         with self.assertRaises(TestImage.DoesNotExist):
-			with transaction.atomic():
-				test_img = TestImage.objects.get(name=test_object_name)
+            with transaction.atomic():
+                test_img = TestImage.objects.get(name=test_object_name)
         self.assertFalse(os.path.isfile(img_path))
     
     
@@ -335,8 +388,8 @@ class DeleteImageTestCase(TestCase):
             os.remove(img_path)
         test_img.delete()
         with self.assertRaises(TestImage.DoesNotExist):
-			with transaction.atomic():
-				test_img = TestImage.objects.get(name=test_object_name)
+            with transaction.atomic():
+                test_img = TestImage.objects.get(name=test_object_name)
         self.assertFalse(os.path.isfile(img_path))
     
     
@@ -350,8 +403,8 @@ class DeleteImageTestCase(TestCase):
             test_img.delete()
         for test_img in test_imgs:
             with self.assertRaises(TestImage.DoesNotExist):
-				with transaction.atomic():
-					TestImage.objects.get(name=test_img.name)
+                with transaction.atomic():
+                    TestImage.objects.get(name=test_img.name)
         for img_path in img_paths:
             self.assertFalse(os.path.isfile(img_path))
     
@@ -361,7 +414,7 @@ class DeleteImageTestCase(TestCase):
                  'test_delete_image_with_missing_image_file', 
                  'test_delete_multiple_images_using_bulk_delete_action']
 
-        return unittest.TestSuite(map(DeleteImageTestCase, tests))
+        return unittest.TestSuite(list(map(DeleteImageTestCase, tests)))
 #end DeleteImageTestCase
 
 
@@ -372,7 +425,10 @@ class CreateDeepZoomTestCase(TestCase):
     
     def tearDown(self):
         for dz in DeepZoom.objects.all():
-            dz.delete()
+            try:
+                dz.delete()
+            except:
+                raise
         reSet(settings.MEDIA_ROOT)
     
     
@@ -385,9 +441,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.1'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -428,9 +487,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.2'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -471,9 +533,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.3'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -516,9 +581,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.4'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -559,9 +627,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.1'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         test_img.full_clean()
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
@@ -574,8 +645,8 @@ class CreateDeepZoomTestCase(TestCase):
         self.assertFalse(test_img.deepzoom_already_created)
         #self.assertIsNone(test_img.associated_deepzoom)
         with self.assertRaises(DeepZoom.DoesNotExist):
-			with transaction.atomic():
-				DeepZoom.objects.get(name=test_object_name)
+            with transaction.atomic():
+                DeepZoom.objects.get(name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
     
@@ -590,9 +661,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.2'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -633,9 +707,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.3'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -676,9 +753,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.4'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         test_img.full_clean()
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
@@ -691,8 +771,8 @@ class CreateDeepZoomTestCase(TestCase):
         self.assertFalse(test_img.deepzoom_already_created)
         #self.assertIsNone(test_img.associated_deepzoom)
         with self.assertRaises(DeepZoom.DoesNotExist):
-			with transaction.atomic():
-				DeepZoom.objects.get(name=test_object_name)
+            with transaction.atomic():
+                DeepZoom.objects.get(name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
     
@@ -708,9 +788,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.5'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         test_img.full_clean()
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
@@ -723,8 +806,8 @@ class CreateDeepZoomTestCase(TestCase):
         self.assertFalse(test_img.deepzoom_already_created)
         #self.assertIsNone(test_img.associated_deepzoom)
         with self.assertRaises(DeepZoom.DoesNotExist):
-			with transaction.atomic():
-				DeepZoom.objects.get(name=test_object_name)
+            with transaction.atomic():
+                DeepZoom.objects.get(name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
     
@@ -739,9 +822,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.6'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -782,9 +868,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.7'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -825,9 +914,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.8'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -868,9 +960,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.9'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         test_img.full_clean()
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
@@ -883,8 +978,8 @@ class CreateDeepZoomTestCase(TestCase):
         self.assertFalse(test_img.deepzoom_already_created)
         #self.assertIsNone(test_img.associated_deepzoom)
         with self.assertRaises(DeepZoom.DoesNotExist):
-			with transaction.atomic():
-				DeepZoom.objects.get(name=test_object_name)
+            with transaction.atomic():
+                DeepZoom.objects.get(name=test_object_name)
         reSet(settings.MEDIA_ROOT)
     
     
@@ -899,9 +994,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.10'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -942,9 +1040,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.11'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -985,9 +1086,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.12'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1028,35 +1132,19 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.13'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
-        media_dir, img_file = os.path.split(test_img.uploaded_image.name)
-        self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
-        self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
-        self.assertEqual(test_img.name, test_object_name)
-        self.assertEqual(test_img.width, TEST_IMAGE_LANDSCAPE_WIDTH)
-        self.assertEqual(test_img.height, TEST_IMAGE_LANDSCAPE_HEIGHT)
-        self.assertTrue(test_img.width > test_img.height)
-        self.assertFalse(test_img.create_deepzoom)
-        self.assertTrue(test_img.deepzoom_already_created)
-        #self.assertIsNotNone(test_img.associated_deepzoom)
-        test_dz = DeepZoom.objects.get(name=test_object_name)
-        #self.assertEqual(test_img.associated_deepzoom, test_dz)
-        self.assertEqual(test_dz.name, test_object_name)
-        dz_path = test_dz.deepzoom_path
-        dz_file = os.path.join(settings.MEDIA_ROOT, test_dz.deepzoom_image)
-        self.assertTrue(os.path.isdir(dz_path))
-        self.assertTrue(os.path.isfile(dz_file))
-        dz_dir, dz_associated_image = os.path.split(test_dz.associated_image)
-        img_dir, img_uploaded_image = os.path.split(test_img.uploaded_image.path)
-        self.assertEqual(dz_associated_image, img_uploaded_image)
-        intermediate_dir, intermediate_file = os.path.split(test_dz.deepzoom_image)
-        deepzoom_dir, dz_file = os.path.split(intermediate_dir)
-        self.assertEqual(deepzoom_dir, VALID_DEEPZOOM_ROOT)
-        self.assertTrue(os.path.isdir(os.path.join(settings.MEDIA_ROOT, 
-                                                   deepzoom_dir)))
-        self.assertIsNotNone(test_dz.deepzoom_xml)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
+        with self.assertRaises(DeepZoom.DoesNotExist):
+            with transaction.atomic():
+                test_dz = DeepZoom.objects.get(name=test_object_name)
+        dz_path = os.path.join(settings.MEDIA_ROOT, VALID_DEEPZOOM_ROOT, test_object_name)
+        dz_file = os.path.join(dz_path, test_object_name + '.dzi')
+        self.assertFalse(os.path.isdir(dz_path))
+        self.assertFalse(os.path.isfile(dz_file))
         reSet(settings.MEDIA_ROOT)
     
     
@@ -1071,9 +1159,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.14'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1114,9 +1205,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.15'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1157,9 +1251,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.16'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1200,35 +1297,19 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.17'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
-        media_dir, img_file = os.path.split(test_img.uploaded_image.name)
-        self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
-        self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
-        self.assertEqual(test_img.name, test_object_name)
-        self.assertEqual(test_img.width, TEST_IMAGE_LANDSCAPE_WIDTH)
-        self.assertEqual(test_img.height, TEST_IMAGE_LANDSCAPE_HEIGHT)
-        self.assertTrue(test_img.width > test_img.height)
-        self.assertFalse(test_img.create_deepzoom)
-        self.assertTrue(test_img.deepzoom_already_created)
-        #self.assertIsNotNone(test_img.associated_deepzoom)
-        test_dz = DeepZoom.objects.get(name=test_object_name)
-        #self.assertEqual(test_img.associated_deepzoom, test_dz)
-        self.assertEqual(test_dz.name, test_object_name)
-        dz_path = test_dz.deepzoom_path
-        dz_file = os.path.join(settings.MEDIA_ROOT, test_dz.deepzoom_image)
-        self.assertTrue(os.path.isdir(dz_path))
-        self.assertTrue(os.path.isfile(dz_file))
-        dz_dir, dz_associated_image = os.path.split(test_dz.associated_image)
-        img_dir, img_uploaded_image = os.path.split(test_img.uploaded_image.path)
-        self.assertEqual(dz_associated_image, img_uploaded_image)
-        intermediate_dir, intermediate_file = os.path.split(test_dz.deepzoom_image)
-        deepzoom_dir, dz_file = os.path.split(intermediate_dir)
-        self.assertEqual(deepzoom_dir, VALID_DEEPZOOM_ROOT)
-        self.assertTrue(os.path.isdir(os.path.join(settings.MEDIA_ROOT, 
-                                                   deepzoom_dir))) 
-        self.assertIsNotNone(test_dz.deepzoom_xml)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
+        with self.assertRaises(DeepZoom.DoesNotExist):
+            with transaction.atomic():
+                test_dz = DeepZoom.objects.get(name=test_object_name)
+        dz_path = os.path.join(settings.MEDIA_ROOT, VALID_DEEPZOOM_ROOT, test_object_name)
+        dz_file = os.path.join(dz_path, test_object_name + '.dzi')
+        self.assertFalse(os.path.isdir(dz_path))
+        self.assertFalse(os.path.isfile(dz_file))
         reSet(settings.MEDIA_ROOT)
     
     
@@ -1243,9 +1324,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.18'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1286,9 +1370,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.19'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1329,9 +1416,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.5.20'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1372,9 +1462,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.6'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_SQUARE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1414,18 +1507,24 @@ class CreateDeepZoomTestCase(TestCase):
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
         image = simulate_uploaded_file(image_path)
         self.test_object_name = 'test_img_3.7.1'
-        test_img1 = TestImage.objects.create(uploaded_image=image, 
-                                             name=self.test_object_name, 
-                                             create_deepzoom=True)
+        try:
+            test_img1 = TestImage.objects.create(uploaded_image=image, 
+                                                 name=self.test_object_name, 
+                                                 create_deepzoom=True)
+        except:
+            raise
         self.test_object_name = 'test_img_3.7.2'
-        test_img2 = TestImage.objects.create(uploaded_image=image, 
-                                             name=self.test_object_name, 
-                                             create_deepzoom=False)
+        try:
+            test_img2 = TestImage.objects.create(uploaded_image=image, 
+                                                 name=self.test_object_name, 
+                                                 create_deepzoom=False)
+        except:
+            raise
         with self.assertRaises(IntegrityError):
-			with transaction.atomic():
-				test_dz2 = DeepZoom(associated_image=test_img2.uploaded_image.path, 
-									name=test_img1.name)
-				test_dz2.save()
+            with transaction.atomic():
+                test_dz2 = DeepZoom(associated_image=test_img2.uploaded_image.path, 
+                                    name=test_img1.name)
+                test_dz2.save()
         reSet(settings.MEDIA_ROOT)
     
     
@@ -1440,9 +1539,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.8'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_LANDSCAPE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1483,9 +1585,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.9'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1526,9 +1631,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = 'test_img_3.10'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_SQUARE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1569,9 +1677,12 @@ class CreateDeepZoomTestCase(TestCase):
         test_object_name = max_chars(64)
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_SQUARE)
         image = simulate_uploaded_file(image_path)
-        test_img = TestImage.objects.create(uploaded_image=image, 
-                                            name=test_object_name, 
-                                            create_deepzoom=True)
+        try:
+            test_img = TestImage.objects.create(uploaded_image=image, 
+                                                name=test_object_name, 
+                                                create_deepzoom=True)
+        except:
+            raise
         media_dir, img_file = os.path.split(test_img.uploaded_image.name)
         self.assertEqual(media_dir, VALID_UPLOADEDIMAGE_ROOT)
         self.assertTrue(os.path.isfile(test_img.uploaded_image.path))
@@ -1633,7 +1744,7 @@ class CreateDeepZoomTestCase(TestCase):
                  'test_create_square_deepzoom_with_valid_settings_defined', 
                  'test_create_deepzoom_with_maxchars__name__defined']
 
-        return unittest.TestSuite(map(CreateDeepZoomTestCase, tests))
+        return unittest.TestSuite(list(map(CreateDeepZoomTestCase, tests)))
 #end CreateDeepZoomTestCase
 
 
@@ -1649,14 +1760,20 @@ class DeleteDeepZoomTestCase(TestCase):
         for num in range(6):
             self.test_object_name = 'test_dz_4.' + str(num)
             image = simulate_uploaded_file(image_path)
-            TestImage.objects.create(uploaded_image=image, 
-                                     name=self.test_object_name, 
-                                     create_deepzoom=True)
+            try:
+                TestImage.objects.create(uploaded_image=image, 
+                                         name=self.test_object_name, 
+                                         create_deepzoom=True)
+            except:
+                raise
     
     
     def tearDown(self):
         for dz in DeepZoom.objects.all():
-            dz.delete()
+            try:
+                dz.delete()
+            except:
+                raise
         reSet(settings.MEDIA_ROOT)
     
     
@@ -1670,10 +1787,13 @@ class DeleteDeepZoomTestCase(TestCase):
         dz_file = os.path.join(settings.MEDIA_ROOT, test_dz.deepzoom_image)
         self.assertTrue(os.path.isdir(dz_path))
         self.assertTrue(os.path.isfile(dz_file))
-        test_dz.delete()
+        try:
+            test_dz.delete()
+        except:
+            raise
         with self.assertRaises(DeepZoom.DoesNotExist):
-			with transaction.atomic():
-				test_dz = DeepZoom.objects.get(name=test_object_name)
+            with transaction.atomic():
+                test_dz = DeepZoom.objects.get(name=test_object_name)
         self.assertFalse(os.path.isdir(dz_path))
         self.assertFalse(os.path.isfile(dz_file))
         reSet(settings.MEDIA_ROOT)
@@ -1689,10 +1809,13 @@ class DeleteDeepZoomTestCase(TestCase):
         self.assertTrue(os.path.isdir(dz_path))
         if os.path.isdir(dz_path):
             shutil.rmtree(dz_path)
-        test_dz.delete()
+        try:
+            test_dz.delete()
+        except:
+            raise
         with self.assertRaises(DeepZoom.DoesNotExist):
-			with transaction.atomic():
-				test_dz = DeepZoom.objects.get(name=test_object_name)
+            with transaction.atomic():
+                test_dz = DeepZoom.objects.get(name=test_object_name)
         self.assertFalse(os.path.isdir(dz_path))
         reSet(settings.MEDIA_ROOT)
     
@@ -1706,11 +1829,14 @@ class DeleteDeepZoomTestCase(TestCase):
         for dz_path in dz_paths:
             self.assertTrue(os.path.isdir(dz_path))
         for test_dz in test_dzs:
-            test_dz.delete()
+            try:
+                test_dz.delete()
+            except:
+                raise
         for test_dz in test_dzs:
             with self.assertRaises(DeepZoom.DoesNotExist):
-				with transaction.atomic():
-					DeepZoom.objects.get(name=test_dz.name)
+                with transaction.atomic():
+                    DeepZoom.objects.get(name=test_dz.name)
         for dz_path in dz_paths:
             self.assertFalse(os.path.isdir(dz_path))
         reSet(settings.MEDIA_ROOT)
@@ -1721,7 +1847,7 @@ class DeleteDeepZoomTestCase(TestCase):
                  'delete_deepzoom_with_missing_dzi_files', 
                  'delete_all_deepzooms_using_bulk_delete_action']
 
-        return unittest.TestSuite(map(DeleteDeepZoomTestCase, tests))
+        return unittest.TestSuite(list(map(DeleteDeepZoomTestCase, tests)))
 #end DeleteDeepZoomTestCase
 
 
@@ -1734,7 +1860,10 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
     '''
     def tearDown(self):
         for dz in DeepZoom.objects.all():
-            dz.delete()
+            try:
+                dz.delete()
+            except:
+                raise
         reSet(settings.MEDIA_ROOT)
     
     
@@ -1746,10 +1875,13 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
         test_object_name = 'test_dz_5.1'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
         image = simulate_uploaded_file(image_path)
-        test_dz = TestImage.objects.create(uploaded_image=image, 
-                                           name=test_object_name, 
-                                           create_deepzoom=True)
-        except_string = "The u'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
+        try:
+            test_dz = TestImage.objects.create(uploaded_image=image, 
+                                               name=test_object_name, 
+                                               create_deepzoom=True)
+        except:
+            raise
+        except_string = "The 'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"
                            "{% deepzoom_js 'deepzoom_div' %}"
@@ -1764,10 +1896,13 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
         test_object_name = 'test_dz_5.2'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
         image = simulate_uploaded_file(image_path)
-        test_dz = TestImage.objects.create(uploaded_image=image, 
-                                           name=test_object_name, 
-                                           create_deepzoom=True)
-        except_string = "The u'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
+        try:
+            test_dz = TestImage.objects.create(uploaded_image=image, 
+                                               name=test_object_name, 
+                                               create_deepzoom=True)
+        except:
+            raise
+        except_string = "The 'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"
                            "{% deepzoom_js deepzoom_obj %}"
@@ -1781,10 +1916,13 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
         test_object_name = 'test_dz_5.3'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
         image = simulate_uploaded_file(image_path)
-        test_dz = TestImage.objects.create(uploaded_image=image, 
-                                           name=test_object_name, 
-                                           create_deepzoom=True)
-        except_string = "The u'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
+        try:
+            test_dz = TestImage.objects.create(uploaded_image=image, 
+                                               name=test_object_name, 
+                                               create_deepzoom=True)
+        except:
+            raise
+        except_string = "The 'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"
                            "{% deepzoom_js deepzoom_obj 'deepzoom_div' extra %}"
@@ -1799,10 +1937,13 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
         test_object_name = 'test_dz_5.4'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
         image = simulate_uploaded_file(image_path)
-        test_dz = TestImage.objects.create(uploaded_image=image, 
-                                           name=test_object_name, 
-                                           create_deepzoom=True)
-        except_string = "The u'deepzoom_js' tag's 'Deep Zoom object' argument should not be in quotes."
+        try:
+            test_dz = TestImage.objects.create(uploaded_image=image, 
+                                               name=test_object_name, 
+                                               create_deepzoom=True)
+        except:
+            raise
+        except_string = "The 'deepzoom_js' tag's 'Deep Zoom object' argument should not be in quotes."
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"
                            "{% deepzoom_js 'deepzoom_obj' 'deepzoom_div' %}"
@@ -1817,10 +1958,13 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
         test_object_name = 'test_dz_5.5'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
         image = simulate_uploaded_file(image_path)
-        test_dz = TestImage.objects.create(uploaded_image=image, 
-                                           name=test_object_name, 
-                                           create_deepzoom=True)
-        except_string = "The u'deepzoom_js' tag's 'Deep Zoom div ID' argument should be in quotes."
+        try:
+            test_dz = TestImage.objects.create(uploaded_image=image, 
+                                               name=test_object_name, 
+                                               create_deepzoom=True)
+        except:
+            raise
+        except_string = "The 'deepzoom_js' tag's 'Deep Zoom div ID' argument should be in quotes."
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"
                            "{% deepzoom_js deepzoom_obj deepzoom_div %}"
@@ -1834,7 +1978,7 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
                  'test_call_template_tag_with_first_argument_quoted', 
                  'test_call_template_tag_with_unquoted__deep_zoom_div_id__argument']
 
-        return unittest.TestSuite(map(DeepZoomFirstTemplateTagTestCase, tests))
+        return unittest.TestSuite(list(map(DeepZoomFirstTemplateTagTestCase, tests)))
 #end DeepZoomFirstTemplateTagTestCase
 
 
@@ -1853,9 +1997,12 @@ class DeepZoomSecondTemplateTagTestCase(TestCase):
         test_object_name = 'test_dz_6.1'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
         image = simulate_uploaded_file(image_path)
-        test_dz = TestImage.objects.create(uploaded_image=image, 
-                                           name=test_object_name, 
-                                           create_deepzoom=True)
+        try:
+            test_dz = TestImage.objects.create(uploaded_image=image, 
+                                               name=test_object_name, 
+                                               create_deepzoom=True)
+        except:
+            raise
         out = Template("{% load deepzoom_tags %}"
                        "{% deepzoom_js unknown_obj 'deepzoom_div' %}"
                        ).render(Context({'deepzoom_obj': test_dz}))
@@ -1870,9 +2017,12 @@ class DeepZoomSecondTemplateTagTestCase(TestCase):
         test_object_name = 'test_dz_6.2'
         image_path = os.path.join(settings.TEST_ROOT, TEST_IMAGE_PORTRAIT)
         image = simulate_uploaded_file(image_path)
-        test_dz = TestImage.objects.create(uploaded_image=image, 
-                                           name=test_object_name, 
-                                           create_deepzoom=True)
+        try:
+            test_dz = TestImage.objects.create(uploaded_image=image, 
+                                               name=test_object_name, 
+                                               create_deepzoom=True)
+        except:
+            raise
         with self.assertTemplateUsed('deepzoom/deepzoom_js.html'):
             out = Template("{% load deepzoom_tags %}"
                            "{% deepzoom_js deepzoom_obj 'deepzoom_div' %}"
@@ -1884,7 +2034,7 @@ class DeepZoomSecondTemplateTagTestCase(TestCase):
         tests = ['test_call_template_tag_with_first_argument_unrecognized_object', 
                  'test_call_template_tag_with_correct_number_and_format_arguments']
 
-        return unittest.TestSuite(map(DeepZoomSecondTemplateTagTestCase, tests))
+        return unittest.TestSuite(list(map(DeepZoomSecondTemplateTagTestCase, tests)))
 #end DeepZoomSecondTemplateTagTestCase
 
 
