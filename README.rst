@@ -11,6 +11,20 @@ and all JavaScript necessary for their instantiation into templates.
 Detailed documentation is available on 
 `ReadTheDocs <http://django-deepzoom.readthedocs.org/en/latest/>`_.
 
+:Author:    David J Cox
+
+:Contact:   <davidjcox.at@gmail.com>
+
+:Version:   2.0
+
+Let me know what you think of it...
+
+What's New?
+-----------
+
+Django-deepzoom 2.0 is a new unified version!  It's now compatible with both Python 2 and Python 3, all versions of Django from 1.4 onward, and with Pillow 1.7.8 onward.  Now it's truly drop-in ready...
+The deepzoom generator parameters have been changed from a arg list to a kwarg dictionary to make things easier.  More robust input checking and better exception handling have also been added.
+
 Run tests
 ---------
 After django-deepzoom has been installed, you may want to sanity check it by running tests, like this::
