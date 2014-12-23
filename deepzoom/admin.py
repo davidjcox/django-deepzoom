@@ -21,4 +21,4 @@ class DeepZoomAdmin(admin.ModelAdmin):
 #end DeepZoomAdmin
 
 
-#EOF django-deepzoom admin
+#EOF - django-deepzoom admin

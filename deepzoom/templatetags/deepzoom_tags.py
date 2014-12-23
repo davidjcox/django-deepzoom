@@ -25,11 +25,12 @@ class DeepZoom_JSNode(template.Node):
             dz_object = self.deepzoom_object.resolve(context)
             t = template.loader.get_template('deepzoom/deepzoom_js.html')
             return t.render(template.Context({'deepzoom_object': dz_object, 
-                                              'deepzoom_div_id': self.deepzoom_div_id}))
+                                              'deepzoom_div_id': self.deepzoom_div_id}, 
+                                              autoescape=context.autoescape))
         except template.VariableDoesNotExist:
             return ''
 
 register.tag('deepzoom_js', deepzoom_js)
 
 
-#EOF django-deepzoom template tag
+#EOF - django-deepzoom template tag

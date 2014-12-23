@@ -27,7 +27,7 @@ STATIC_ROOT = os.path.abspath(os.path.join(TEST_ROOT, 'test_static'))
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.abspath(os.path.join(TEST_ROOT, 'test_media'))
+MEDIA_ROOT = os.path.abspath(os.path.join(TEST_ROOT, 'test_data'))
 
 MEDIA_URL = '/media/'
 
@@ -68,9 +68,13 @@ INSTALLED_APPS = EXTERNAL_APPS + INTERNAL_APPS
 
 #These are the keyword arguments used to initialize the deep zoom creator:
 #'tile_size', 'tile_overlap', 'tile_format', 'image_quality', 'resize_filter'.
-#They strike a good (the best?) balance between image fidelity and file size.
+#They strike a good (maybe best?) balance between image fidelity and file size.
 #If not defined the following default values will be used:
-#DEEPZOOM_PARAMS = [256, 1, "jpg", 0.85, "antialias"]
+# DEEPZOOM_PARAMS = {'tile_size': 256,
+                    # 'tile_overlap': 1,
+                    # 'tile_format': "jpg",
+                    # 'image_quality': 0.85,
+                    # 'resize_filter': "antialias"}
 
 #This is the directory appended to MEDIA_ROOT for storing generated deep zooms.
 #If defined, but not physically created, the directory will be created for you.

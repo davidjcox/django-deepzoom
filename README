@@ -1,52 +1,18 @@
 ===============
-Django-deepzoom
+django-deepzoom
 ===============
 
 Django-deepzoom is a drop-in Django app for the creation and use of Deep Zoom 
 tiled images.  It handily integrates Daniel Gasienica's and Kapil Thangavelu's 
-deepzoom.py image generator, Microsoft's SeaDragon deep zoom viewer, and 
-Sean Rice's JavaScript touch events into a set of model classes and template 
-tags which programmatically generate tiled images and all JavaScript necessary 
-for their instantiation into templates.
+deepzoom.py image generator and the OpenSeadragon deep zoom viewer into a set 
+of model classes and template tags which programmatically generate tiled images 
+and all JavaScript necessary for their instantiation into templates.
 
 Detailed documentation is available on http://django-deepzoom.readthedocs.org/en/latest/.
 
-Author:    David J Cox
-
-Contact:   <davidjcox.at@gmail.com>
-
-Version:   1.0
-
-Let me know what you think of Django-deepzoom.  Share your site (or sites) that use it.  I'm curious.  Cool.
-
-What's New?
------------
-
-Django-deepzoom has been ported to Python 3 and Django 1.6.  Both ports required 
-introducing backwards-incompatible changes that have been resolved, for now, with 
-separate Django-deepzoom releases.  In the future a unified version will be
-attempted.
-
-Porting to Python 3 involved replacing PIL with Pillow, ensuring uniform Unicode 
-string-handling, converting to new function calls, and updating the test code.
-
-Porting to Django 1.6 mainly involved converting the test code to handle the new 
-default database autocommit behavior.  Tests designed to force errors and exceptions 
-had to be wrapped in transaction.atomic() to avoid halting the testrunner.
-
-To accommodate these inflection points, three Django-deepzoom releases are available:
-
-- Version 0.3 is compatible with Python 2 and Django pre-1.6.
-
-- Version 0.4 is compatible with Python 2 and Django 1.6+.
-
-- Version 1.0 is compatible with Python 3 and Django 1.6+.
-
-A summary table is provided in the Quick start section below...
-
 Run tests
 ---------
-After Django-deepzoom has been installed, you may want to sanity check it by 
+After django-deepzoom has been installed, you may want to sanity check it by 
 running tests, like this:
 
     python manage.py test deepzoom --settings=deepzoom.test.test_settings
@@ -55,37 +21,22 @@ running tests, like this:
         Some of the negative tests are intended to throw exceptions.  The error 
         text will display mixed in with the test results.  THAT IS EXPECTED!
 
-        If the end result is **OK** then all tests have passed.
-
-        Enjoy.
+        If the end result is **OK** then all tests have passed.  Enjoy.
 
 
 Quick start
 -----------
 
-Before you begin, choose the Django-deepzoom version that's compatible with the versions of Python and Django you're using:
+1.) Install "django-deepzoom" like this:
 
-	+--------+------------+-----------------+
-	| Python |   Django   | Django-deepzoom |
-	+========+============+=================+
-	|   2    |  pre-1.6   |       0.3       |
-	+--------+------------+-----------------+
-	|   2    |    1.6+    |       0.4       |
-	+--------+------------+-----------------+
-	|   3    |    1.6+    |       1.0       |
-	+--------+------------+-----------------+
-
-
-1.) Install Django-deepzoom like this:
-
-    pip install "django-deepzoom==1.0"
+    pip install -U django-deepzoom
 
 
 or, like this:
 
-    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-1.0.tar.gz
-    tar -xvf django-deepzoom-1.0.tar.gz
-    cd django-deepzoom-1.0
+    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-2.0.tar.gz
+    tar -xvf django-deepzoom-2.0.tar.gz
+    cd django-deepzoom-2.0
     python setup.py install
 
 2.) Add "deepzoom" to your INSTALLED_APPS setting like this::
@@ -93,9 +44,6 @@ or, like this:
     (in settings.py)
       
     INSTALLED_APPS = (
-		'django.contrib.auth',
-        'django.contrib.staticfiles',
-        'django.contrib.admin', 
         ...
         'deepzoom',
         ...
@@ -114,7 +62,7 @@ or, like this:
       '''
       pass
 
-4.) Run `python manage.py syncdb` to create the Django-deepzoom models.
+4.) Run `python manage.py syncdb` to create the django-deepzoom models.
 
 5.) Add an appropriate URL to your Urlconf, something like this::
 
@@ -158,8 +106,6 @@ or, like this:
       
     <div id="deepzoom_div"></div>
     
-    <script src="{{ STATIC_URL }}js/vendor/seadragon-min.js"></script>
-    
     <script>{% deepzoom_js deepzoom_obj "deepzoom_div" %}</script>
 
 8.) Run `python manage.py collectstatic` to collect your static files into STATIC_ROOT.
@@ -173,6 +119,6 @@ or, like this:
     it or click/touch the overlaid controls to zoom into and out of the tiled 
     image:
 
-    **Behold!**
+    `**Behold!** <http://django-deepzoom.invocatum.net/>`_
 
 .
