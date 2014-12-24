@@ -123,6 +123,6 @@ or, like this::
 
 10.) Navigate to the page containing the deep zoom image and either click/touch it or click/touch the overlaid controls to zoom into and out of the tiled image::
 
-    `**Behold!** <http://django-deepzoom.invocatum.net/featured/>`_
+    `Behold! <http://django-deepzoom.invocatum.net/featured/>`_
 
 .

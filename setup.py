@@ -54,6 +54,7 @@ setup(
                       'pillow>=1.7.8',
     ],
     keywords='imaging zoomable images deepzoom openseadragon',
+    zip_safe=False,
 )
 
 #EOF - django-deepzoom setup
