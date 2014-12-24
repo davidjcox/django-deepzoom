@@ -121,8 +121,8 @@ or, like this::
 
 9.) Start the development server and visit `http://127.0.0.1:8000/admin/` to upload an image to the associated model (you'll need the Admin app enabled).  Be sure to check the `Generate deep zoom?` checkbox for that image before saving it.
 
-10.) Navigate to the page containing the deep zoom image and either click/touch it or click/touch the overlaid controls to zoom into and out of the tiled image::
+10.) Navigate to the page containing the deep zoom image and either click/touch it or click/touch the overlaid controls to zoom into and out of the tiled image.
 
-    `Behold! <http://django-deepzoom.invocatum.net/featured/>`_
+`Behold! <http://django-deepzoom.invocatum.net/featured/>`_
 
 .
