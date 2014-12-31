@@ -21,8 +21,8 @@ deepzoom.py image generator and the OpenSeadragon deep zoom viewer into a set
 of model classes and template tags which programmatically generate tiled images 
 and all JavaScript necessary for their instantiation into templates.
 
-Django-deepzoom 2.0 is the first universal version-- it's now universally 
-supported on both Python 2 and 3.  Support for PIL was dropped entirely and was 
+Django-deepzoom 2.0 is the first universal version-- it's now supported in both 
+Python 2 and 3, and in Django 1.4+.  Support for PIL was dropped entirely and was 
 replaced with Pillow for future compatibility.  But, the biggest change by far 
 is the switch to the OpenSeadragon deepzoom viewer from the Microsoft SeaDragon 
 viewer.  Microsoft's viewer had hardcoded dependencies on an external site for 
@@ -141,19 +141,22 @@ numbers, of course.  Installing to a
     )
 
 The Django apps shown are for demonstration only-- django-deepzoom has no 
-dependencies on them.
+dependencies on them, except for staticfiles and admin if using their respective functions.
  
 3.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, something like this::
 
     (in models.py)
       
     from deepzoom.models import DeepZoom, UploadedImage
+	from django.contrib import admin
       
     class MyImage(UploadedImage):
-      '''
-      Overrides UploadedImage base class.
-      '''
-      pass
+		'''
+		Overrides UploadedImage base class.
+		'''
+		pass
+	
+	admin.site.register(MyImage)
 
 The save() method of the overridden class can be overridden, too, of course, to 
 add additional fields or features.
@@ -196,8 +199,8 @@ The slug parameter name does not have to be the same as the example as long as
 it matches the corresponding urlconf signature.  (See above)
 
 7.) In your template, create an empty div with a unique ID.  Load the deepzoom 
-tags and pass the deepzoom object and deepzoom div ID to the template tag inside 
-a <script> block in the body like this::
+tags and pass the deepzoom object and deepzoom div ID to the template tag in 
+the body like this::
 
     (in e.g. deepzoom.html)
       
@@ -205,9 +208,12 @@ a <script> block in the body like this::
       
     {% load deepzoom_tags %}
       
-    <div id="deepzoom_div"></div>
+    <div id="deepzoom_div" style="width: 1024px; height: 768px;"></div>
     
-    <script>{% deepzoom_js deepzoom_obj "deepzoom_div" %}</script>
+    {% deepzoom_js deepzoom_obj "deepzoom_div" %}
+
+.. note::
+		The deepzoom div should be assigned absolute dimensions.
 
 Neither the deep zoom queryset object nor the deep zoom div ID have to be named 
 like in the example.  Any name can be given to either, so long as the deep zoom 
@@ -216,12 +222,16 @@ in the view providing it and the deep zoom div ID matches the name passed to the
 deepzoom_js template tag.
 
 8.) Run `python manage.py collectstatic` to collect your static files into 
-STATIC_ROOT, specifically so that the openseadragon files are available.
+STATIC_ROOT, specifically so that the OpenSeaDragon files are available.
 
 9.) Start the development server and visit `http://127.0.0.1:8000/admin/` to 
 upload an image to the associated model (you'll need the Admin app enabled).  
 Be sure to check the `Generate deep zoom?` checkbox for that image before 
 saving it.
+
+10.) Navigate to the page containing the deep zoom image and either click/touch it or click/touch the overlaid controls to zoom into and out of the tiled image.
+
+**Behold!** `A deeply zoomable image! <http://django-deepzoom.invocatum.net/featured/>`_
 
 How do I configure it?
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -249,11 +259,8 @@ be *'/path/to/media_root/my/uploaded/images/'*.
 This is a list of arguments used to initialize the deep zoom creator, including 
 'tile_size', 'tile_overlap', 'tile_format', 'image_quality', and 'resize_filter'
 in order.
-If undefined, ``{'tile_size': 256,
-                 'tile_overlap': 1,
-                 'tile_format': "jpg",
-                 'image_quality': 0.85,
-                 'resize_filter': "antialias"}`` is used by default.
+If undefined, ``{'tile_size': 256, 'tile_overlap': 1, 'tile_format': "jpg", 
+'image_quality': 0.85, 'resize_filter': "antialias"}`` is used by default.
 
 *tile_size*
 

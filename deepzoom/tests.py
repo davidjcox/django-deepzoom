@@ -2328,7 +2328,7 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
             except:
                 raise
         
-        except_string = "The u'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
+        except_string = "The 'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
         
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"
@@ -2359,7 +2359,7 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
             except:
                 raise
         
-        except_string = "The u'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
+        except_string = "The 'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
         
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"
@@ -2389,7 +2389,7 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
             except:
                 raise
         
-        except_string = "The u'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
+        except_string = "The 'deepzoom_js' tag requires two arguments: 'Deep Zoom object' and 'Deep Zoom div ID'."
         
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"
@@ -2420,7 +2420,7 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
             except:
                 raise
         
-        except_string = "The u'deepzoom_js' tag's 'Deep Zoom object' argument should not be in quotes."
+        except_string = "The 'deepzoom_js' tag's 'Deep Zoom object' argument should not be in quotes."
         
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"
@@ -2451,7 +2451,7 @@ class DeepZoomFirstTemplateTagTestCase(SimpleTestCase):
             except:
                 raise
         
-        except_string = "The u'deepzoom_js' tag's 'Deep Zoom div ID' argument should be in quotes."
+        except_string = "The 'deepzoom_js' tag's 'Deep Zoom div ID' argument should be in quotes."
         
         with self.assertRaisesMessage(TemplateSyntaxError, except_string):
             out = Template("{% load deepzoom_tags %}"

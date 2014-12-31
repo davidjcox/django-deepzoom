@@ -23,6 +23,7 @@ What's New?
 -----------
 
 Django-deepzoom 2.0 is a new unified version!  It's now compatible with both Python 2 and Python 3, all versions of Django from 1.4 onward, and with Pillow 1.7.8 onward.  Now it's truly drop-in ready...
+The OpenSeadragon open source deep zoom viewer has replaced the Microsoft Seadragon control.  The project benefits from a truly open solution free from dependencies.
 The deepzoom generator parameters have been changed from a arg list to a kwarg dictionary to make things easier.  More robust input checking and better exception handling have also been added.
 
 Run tests
@@ -67,12 +68,15 @@ or, like this::
     (in models.py)
       
     from deepzoom.models import DeepZoom, UploadedImage
+	from django.contrib import admin
       
     class MyImage(UploadedImage):
-      '''
-      Overrides UploadedImage base class.
-      '''
-      pass
+		'''
+		Overrides UploadedImage base class.
+		'''
+		pass
+	
+	admin.site.register(MyImage)
 
 4.) Run `python manage.py syncdb` to create the django-deepzoom models.
 
@@ -105,7 +109,7 @@ or, like this::
                                 {'deepzoom_obj': _deepzoom_obj}, 
                                 context_instance=RequestContext(request))
 
-7.) In your template, create an empty div with a unique ID.  Load the deepzoom tags and pass the deepzoom object and deepzoom div ID to the template tag inside a <script> block in the body like this::
+7.) In your template, create an empty div with a unique ID.  Load the deepzoom tags and pass the deepzoom object and deepzoom div ID to the template tag in the body like this::
 
     (in e.g. deepzoom.html)
       
@@ -113,16 +117,19 @@ or, like this::
       
     {% load deepzoom_tags %}
       
-    <div id="deepzoom_div"></div>
+    <div id="deepzoom_div" style="width: 1024px; height: 768px;"></div>
     
-    <script>{% deepzoom_js deepzoom_obj "deepzoom_div" %}</script>
+    {% deepzoom_js deepzoom_obj "deepzoom_div" %}
 
-8.) Run `python manage.py collectstatic` to collect your static files into STATIC_ROOT.
+.. note::
+		The deepzoom div should be assigned absolute dimensions.
+
+8.) Run `python manage.py collectstatic` to collect your static files into STATIC_ROOT, specifically so that the OpenSeaDragon files are available.
 
 9.) Start the development server and visit `http://127.0.0.1:8000/admin/` to upload an image to the associated model (you'll need the Admin app enabled).  Be sure to check the `Generate deep zoom?` checkbox for that image before saving it.
 
 10.) Navigate to the page containing the deep zoom image and either click/touch it or click/touch the overlaid controls to zoom into and out of the tiled image.
 
-`Behold! <http://django-deepzoom.invocatum.net/featured/>`_
+**Behold!** `A deeply zoomable image! <http://django-deepzoom.invocatum.net/featured/>`_
 
 .
