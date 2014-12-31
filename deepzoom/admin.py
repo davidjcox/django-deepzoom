@@ -15,6 +15,7 @@ def delete_selected(self, request, queryset):
 #end delete_selected
 
 
+@admin.register(models.DeepZoom)
 class DeepZoomAdmin(admin.ModelAdmin):
     readonly_fields = ('name', 'slug', 'deepzoom_image', 'created',)
     actions = [delete_selected]

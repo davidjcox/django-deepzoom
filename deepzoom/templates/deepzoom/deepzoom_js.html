@@ -1,13 +1,14 @@
-    {% load static %}
-	</script type="text/javascript" src="/js/vendor/openseadragon/openseadragon.min.js">
+    {% load static %}{% get_static_prefix as STATIC_PREFIX %}{% get_media_prefix as MEDIA_PREFIX %}
+	<script src="{{ STATIC_PREFIX }}deepzoom/js/vendor/openseadragon/openseadragon.min.js"></script>
+	<script>
     //django-deepzoom by David J Cox
     //
     //Create and initialize deepzoom viewer.
     var viewer = OpenSeadragon({
         id: "{{ deepzoom_div_id }}",
-        prefixUrl: "/js/vendor/openseadragon/images/",
-        tileSources: "{% get_media_prefix %}{{ deepzoom_object.deepzoom_image|safe }}",
+        prefixUrl: "{{ STATIC_PREFIX }}deepzoom/js/vendor/openseadragon/images/",
+        tileSources: "{{ MEDIA_PREFIX }}{{ deepzoom_object.deepzoom_image|safe }}",
 		navigationControlAnchor: OpenSeadragon.ControlAnchor.BOTTOM_RIGHT,
-		
+		zoomPerClick: 1.6
     });
 	</script>
