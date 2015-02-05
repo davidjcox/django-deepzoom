@@ -1,12 +1,13 @@
 '''django-deepzoom setup'''
+
 import os
 from setuptools import setup, find_packages
 import deepzoom as app
 
 
-def file_read(fname):
+def file_read(filename):
     try:
-        return open(os.path.join(os.path.dirname(__file__), fname)).read()
+        return open(os.path.join(os.path.dirname(__file__), filename)).read()
     except IOError:
         return ''
 
@@ -52,6 +53,7 @@ setup(
     install_requires=[
                       'django>=1.4',
                       'pillow>=1.7.8',
+                      'six>=1.9.0',
     ],
     keywords='imaging zoomable images deepzoom openseadragon',
     zip_safe=False,
