@@ -1,31 +1,25 @@
 '''django-deepzoom models'''
+
 from django.db import models
 from django.conf import settings
 from django.contrib import admin
 
-try:
-    from django.utils.text import slugify
-except ImportError:
-    try:
-        from django.template.defaultfilters import slugify
-    except ImportError:
-        print("Unable to import `slugify`.")
-except:
-    print("Unable to import `slugify`.")
-
 import os
 import sys
 import shutil
-# import six
+import logging
 
+import six
+
+from .mixins import ModelDiffMixin
 from . import deepzoom
 
 
 
-#===============================================================================
+logger = logging.getLogger("deepzoom.models")
 
 
-class DeepZoom(models.Model):
+class DeepZoom(ModelDiffMixin, models.Model):
     '''
     Generates a deep zoom tiled image of an uploaded image.
     
@@ -56,139 +50,131 @@ class DeepZoom(models.Model):
                                'resize_filter': "antialias"}
     
     
-    name = models.CharField(unique=True, 
-                            max_length=64)
-    
-    slug = models.SlugField(max_length=64, 
-                            unique=True, 
+    name = models.CharField(max_length=128,
                             editable=False)
     
-    associated_image = models.CharField(max_length=256, 
+    slug = models.SlugField(max_length=128,
+                            editable=False)
+    
+    associated_image = models.CharField(max_length=256,
                                         editable=False)
     
-    deepzoom_image = models.CharField(max_length=256, 
+    deepzoom_image = models.CharField(max_length=256,
                                       editable=False)
     
-    deepzoom_path = models.CharField(max_length=256, 
+    deepzoom_path = models.CharField(max_length=256,
                                      editable=False)
     
-    created = models.DateTimeField(auto_now_add=True, 
+    created = models.DateTimeField(auto_now_add=True,
                                    editable=False)
     
-    updated = models.DateTimeField(auto_now_add=True, 
+    updated = models.DateTimeField(auto_now_add=True,
                                    editable=False)
     
     
     def get_dz_param(self, dz_param, dz_params):
-        #Return parameter from settings, filling in default values as needed.
+        """
+        Returns parameter from settings, if found.
+        Substitutes in default value, if missing.
+        """
         return dz_params.get(dz_param, self.DEFAULT_DEEPZOOM_PARAMS[dz_param])
     
     
-    def save(self, *args, **kwargs):
-        #Accommodate unicode differences between Python 2 & 3.
+    def create_deepzoom_files(self):
+        """
+        Creates deepzoom image from associated uploaded image.
+        Attempts to load `DEEPZOOM_PARAMS` and `DEEPZOOM_ROOT` from settings.
+        Substitutues default settings for any missing settings.
+        """
+        
+        #Try to load deep zoom parameters, otherwise assign default values.
         try:
-            self.slug = slugify(unicode(self.name))
-        except NameError:
-            self.slug = slugify(self.name)
-                
-        if not (self.deepzoom_image and self.deepzoom_path):
-            #Try to load deep zoom parameters, otherwise assign default values.
+            dz_params = settings.DEEPZOOM_PARAMS
+        except AttributeError:
+            logger.exception("`DEEPZOOM_PARAMS` incorrectly defined!")
+            dz_params = self.DEFAULT_DEEPZOOM_PARAMS
+        
+        if not isinstance(dz_params, dict):
+            raise AttributeError("`DEEPZOOM_PARAMS` must be a dictionary.")
+        
+        _tile_size = self.get_dz_param('tile_size', dz_params)
+        _tile_overlap = self.get_dz_param('tile_size', dz_params)
+        _tile_format = self.get_dz_param('tile_size', dz_params)
+        _image_quality = self.get_dz_param('tile_size', dz_params)
+        _resize_filter = self.get_dz_param('tile_size', dz_params)
+        
+        #Initialize deep zoom creator.
+        creator = deepzoom.ImageCreator(tile_size=_tile_size, 
+                                        tile_overlap=_tile_overlap, 
+                                        tile_format=_tile_format, 
+                                        image_quality=_image_quality, 
+                                        resize_filter=_resize_filter)
+        
+        #Try to load deep zoom root, otherwise assign default value.
+        try:
+            dz_deepzoom_root = settings.DEEPZOOM_ROOT
+        except AttributeError:
+            dz_deepzoom_root = self.DEFAULT_DEEPZOOM_ROOT
+        
+        if not isinstance(dz_deepzoom_root, six.string_types):
+            raise AttributeError("`DEEPZOOM_ROOT` must be a string.")
+        
+        media_root = settings.MEDIA_ROOT
+        dz_media_root = os.path.join(media_root, dz_deepzoom_root)
+        
+        #Create deep zoom media root if defined but not actually exists.
+        if not os.path.isdir(dz_media_root):
             try:
-                dz_params = settings.DEEPZOOM_PARAMS
-            except AttributeError:
-                dz_params = self.DEFAULT_DEEPZOOM_PARAMS
-            
-            if not isinstance(dz_params, dict):
-                raise AttributeError("`DEEPZOOM_PARAMS` must be a dictionary.")
-            
-            _tile_size = self.get_dz_param('tile_size', dz_params)
-            _tile_overlap = self.get_dz_param('tile_size', dz_params)
-            _tile_format = self.get_dz_param('tile_size', dz_params)
-            _image_quality = self.get_dz_param('tile_size', dz_params)
-            _resize_filter = self.get_dz_param('tile_size', dz_params)
-            
-            #Initialize deep zoom creator.
-            creator = deepzoom.ImageCreator(tile_size=_tile_size, 
-                                            tile_overlap=_tile_overlap, 
-                                            tile_format=_tile_format, 
-                                            image_quality=_image_quality, 
-                                            resize_filter=_resize_filter)
-            
-            dz_filename = self.name + '.dzi'
-            
-            #Try to load deep zoom root, otherwise assign default value.
-            try:
-                dz_deepzoom_root = settings.DEEPZOOM_ROOT
-            except AttributeError:
-                dz_deepzoom_root = self.DEFAULT_DEEPZOOM_ROOT
-            
-            try:
-                if not isinstance(dz_deepzoom_root, str):
-                    raise AttributeError("`DEEPZOOM_ROOT` must be a string.")
-            except NameError:
-                try:
-                    if not isinstance(dz_deepzoom_root, basestring):
-                        raise AttributeError("`DEEPZOOM_ROOT` must be a string.")
-                except:
-                    raise
-            except:
-                    raise
-            
-            # if not isinstance(dz_deepzoom_root, six.string_types):
-                # raise AttributeError("`DEEPZOOM_ROOT` must be a string.")
-            
-            dz_media_root = os.path.join(settings.MEDIA_ROOT, dz_deepzoom_root)
-            
-            #Create deep zoom media root if defined but not actually exists.
-            if not os.path.isdir(dz_media_root):
-                try:
-                    os.makedirs(dz_media_root)
-                except OSError as err:
-                    print("OS error({0}): {1}".format(err.errno, err.strerror))
-                except IOError as err:
-                    print("I/O error({0}): {1}".format(err.errno, err.strerror))
-                except:
-                    raise
-            
-            dz_relfilename = os.path.join(dz_deepzoom_root, self.name, dz_filename)
-            dz_fullfilepath = os.path.join(dz_media_root, self.name)
-            dz_fullfilename = os.path.join(dz_fullfilepath, dz_filename)
-            
-            #Process deep zoom image and save to file system.
-            try:
-                creator.create(self.associated_image, dz_fullfilename)
+                os.makedirs(dz_media_root)
             except OSError as err:
                 print("OS error({0}): {1}".format(err.errno, err.strerror))
             except IOError as err:
                 print("I/O error({0}): {1}".format(err.errno, err.strerror))
             except:
-                print("Unexpected deep zoom creation error:", sys.exc_info())
+                logger.exception("`DEEPZOOM_ROOT` directory creation failed!")
                 raise
-
-            self.deepzoom_image = dz_relfilename # Needed by template.
-            self.deepzoom_path = dz_fullfilepath # Needed by `delete` method.
         
-        super(DeepZoom, self).save(*args, **kwargs)
-    
-    
-    def delete(self, *args, **kwargs):
+        dz_filename = self.slug + ".dzi"
+        dz_relative_filepath = os.path.join(dz_deepzoom_root, self.slug)
+        dz_relative_filename = os.path.join(dz_relative_filepath, dz_filename)
+        dz_absolute_filename = os.path.join(media_root, dz_relative_filename)
+        dz_associated_image = os.path.join(media_root, self.associated_image)
+        
+        #Process deep zoom image and save to file system.
         try:
-            shutil.rmtree(self.deepzoom_path, ignore_errors=True)
+            creator.create(dz_associated_image, dz_absolute_filename)
+        except OSError as err:
+            print("OS error({0}): {1}".format(err.errno, err.strerror))
+        except IOError as err:
+            print("I/O error({0}): {1}".format(err.errno, err.strerror))
         except:
-            pass
+            print("Unexpected deep zoom creation error:", sys.exc_info())
+            raise
         
-        super(DeepZoom, self).delete(*args, **kwargs)
+        return(dz_relative_filename, dz_relative_filepath)
+    
+    
+    def delete_deepzoom_files(self):
+        """
+        Deletes file tree for an entire deepzoom image from storage.
+        Ignores any errors from operation.
+        """
+        _deepzooom_path = os.path.join(settings.MEDIA_ROOT, self.deepzoom_path)
+        try:
+            shutil.rmtree(_deepzooom_path, ignore_errors=True)
+        except:
+            logger.exception("Deepzoom files deletion failed!")
     
     
     def __unicode__(self):
-        return '%s' % (self.name)
+        return six.u('%s') % (self.name)
     
     def __str__(self):
         return '%s' % (self.name)
 # /DeepZoom
 
 
-class UploadedImage(models.Model):
+class UploadedImage(ModelDiffMixin, models.Model):
     '''
     Abstract class for uploaded images to support creation of DeepZoom images.
     
@@ -208,6 +194,14 @@ class UploadedImage(models.Model):
     
     DEFAULT_UPLOADEDIMAGE_ROOT = 'uploaded_images'
     
+    try:
+        DEFAULT_CREATE_DEEPZOOM = settings.DEFAULT_CREATE_DEEPZOOM_OPTION
+    except AttributeError:
+        DEFAULT_CREATE_DEEPZOOM = False
+    
+    if not isinstance(DEFAULT_CREATE_DEEPZOOM, bool):
+        raise AttributeError("`DEFAULT_CREATE_DEEPZOOM_OPTION` must be a Boolean.")
+    
     
     def get_uploaded_image_root(instance, filename):
         try:
@@ -215,21 +209,11 @@ class UploadedImage(models.Model):
         except AttributeError:
             uploaded_image_root = instance.DEFAULT_UPLOADEDIMAGE_ROOT
         
-        try:
-            if not isinstance(uploaded_image_root, str):
+        if not isinstance(uploaded_image_root, six.string_types):
                 raise AttributeError("`UPLOADEDIMAGE_ROOT` must be a string.")
-        except NameError:
-            try:
-                if not isinstance(uploaded_image_root, basestring):
-                    raise AttributeError("`UPLOADEDIMAGE_ROOT` must be a string.")
-            except:
-                raise
-        except:
-                raise
         
-        # if not isinstance(uploaded_image_root, six.string_types):
-                # raise AttributeError("`DEEPZOOM_ROOT` must be a string.")
-        
+        extension = os.path.splitext(filename)[1]
+        filename = instance.slug + extension
         return (os.path.join(uploaded_image_root, filename))
     
     
@@ -237,84 +221,74 @@ class UploadedImage(models.Model):
                                        height_field='height', 
                                        width_field='width')
     
-    name = models.CharField(max_length=64, 
-                            unique=True, 
-                            help_text="64 chars.  Must be unique.")
+    name = models.CharField(max_length=128,
+                            unique=True,
+                            help_text="Max 128 characters.")
     
-    slug = models.SlugField(max_length=64, 
-                            unique=True, 
-                            editable=False)
+    slug = models.SlugField(max_length=128,
+                            editable=False,
+                            help_text="(system-constructed)")
     
-    height = models.PositiveIntegerField(editable=False, 
-                                         help_text="Auto-filled by PIL.")
+    height = models.PositiveIntegerField(editable=False,
+                                         help_text="(system-calculated)")
     
-    width = models.PositiveIntegerField(editable=False, 
-                                        help_text="Auto-filled by PIL.")
+    width = models.PositiveIntegerField(editable=False,
+                                        help_text="(system-calculated)")
     
-    #Optionally generate deep zoom from image if set to True.
-    create_deepzoom = models.BooleanField(default=False, 
+    #Optionally generate deep zoom from uploaded image if set to True.
+    create_deepzoom = models.BooleanField(default=DEFAULT_CREATE_DEEPZOOM,
                                           help_text="Generate deep zoom?")
     
-    deepzoom_already_created = models.BooleanField(default=False, 
-                                                   editable=False)
+    #Link this image to generated deep zoom.
+    associated_deepzoom = models.OneToOneField(DeepZoom,
+                                               null=True,
+                                               blank=True,
+                                               related_name="%(app_label)s_%(class)s",
+                                               editable=False,
+                                               on_delete=models.SET_NULL)
     
-    created = models.DateTimeField(auto_now_add=True, 
+    created = models.DateTimeField(auto_now_add=True,
                                    editable=False)
     
-    updated = models.DateTimeField(auto_now=True, 
+    updated = models.DateTimeField(auto_now=True,
                                    editable=False)
     
     
-    def save(self, *args, **kwargs):
-        #Accommodate unicode differences between Python 2 & 3.
+    def create_deepzoom_image(self):
+        """
+        Creates and processes deep zoom image files to storage.
+        Returns instance of newly created DeepZoom instance for associating   
+        uploaded image to it.
+        """
         try:
-            self.slug = slugify(unicode(self.name))
-        except NameError:
-            self.slug = slugify(self.name)
-                
-        if not self.create_deepzoom:
-            super(UploadedImage, self).save(*args, **kwargs)
-        
-        #Create deep zoom tiled image and link this image to it.
-        if self.create_deepzoom and not self.deepzoom_already_created:
-            self.create_deepzoom = False
-            self.deepzoom_already_created = True
-            try:
-                super(UploadedImage, self).save(*args, **kwargs)
-                dz = DeepZoom(associated_image=self.uploaded_image.path, 
-                              name=self.name)
-                dz.save()
-            except (TypeError, ValueError, AttributeError) as err:
-                print("Error: Incorrect deep zoom parameter(s) in settings.py: {0}".format(err))
-                raise
-            except:
-                print("Unexpected error creating deep zoom: {0}".format(sys.exc_info()[1:2]))
-                raise
-                
+            dz = DeepZoom.objects.create(associated_image=self.uploaded_image.name, 
+                                         name=self.name)
+        except (TypeError, ValueError, AttributeError) as err:
+            print("Error: Incorrect deep zoom parameter(s) in settings.py: {0}".format(err))
+            raise
+        except:
+            print("Unexpected error creating deep zoom: {0}".format(sys.exc_info()[1:2]))
+            raise
+        return dz
     
-    def delete(self, *args, **kwargs):
+    
+    def delete_image_file(self, path_of_image_to_delete=None):
+        """
+        Deletes uploaded image file from storage.
+        """
         try:
-            os.remove(self.uploaded_image.path)
+            os.remove(path_of_image_to_delete)
         except OSError:
-            pass
+            logger.exception("Image file deletion failed!")
+    
         
-        super(UploadedImage, self).delete(*args, **kwargs)
-    
-    
     def __unicode__(self):
-        return '%s' % (self.name)
+        return six.u('%s') % (self.name)
+    
     
     def __str__(self):
         return '%s' % (self.name)
 # /UploadedImage
-
-
-class TestImage(UploadedImage):
-    '''
-    Test class included solely for testing.  Feel free to delete it or change it
-    if you've no need to run the app tests.
-    '''
-# /TestImage
 
 
 #EOF - django-deepzoom models
