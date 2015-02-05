@@ -21,19 +21,16 @@ deepzoom.py image generator and the OpenSeadragon deep zoom viewer into a set
 of model classes and template tags which programmatically generate tiled images 
 and all JavaScript necessary for their instantiation into templates.
 
-Django-deepzoom 2.0 is the first universal version-- it's now supported in both 
-Python 2 and 3, and in Django 1.4+.  Support for PIL was dropped entirely and was 
-replaced with Pillow for future compatibility.  But, the biggest change by far 
-is the switch to the OpenSeadragon deepzoom viewer from the Microsoft SeaDragon 
-viewer.  Microsoft's viewer had hardcoded dependencies on an external site for 
-resources and that site has gone offline, putting the future of the use of 
-the entire control in doubt.
+Django-deepzoom 3.0 involves major architectural changes.  It introduces 
+signal-based save, a new `DEFAULT_CREATE_DEEPZOOM_OPTION` setting, better file 
+management, and decoupled file locations. It is Python 2/3 compatible, 
+Django 1.4+ compatible, and Pillow 1.7.8+ compatible.
 
 The purpose of Django-deepzoom is to make the integration of the deepzoom tiled 
 image viewer into Django projects as easy as possible.  Previously that required 
 importing the standalone deepzoom module into your project, writing custom model 
 class code to generate tiled images from it, and crafting custom JavaScript 
-markup in your templates to instantiate it.  Whew!
+markup in your templates to instantiate it.  Yikes.
 
 Django-deepzoom handles this all for you.  The app consists of two model classes 
 and a template tag that orchestrate image uploads, deepzoom generation, deepzoom 
@@ -141,22 +138,19 @@ numbers, of course.  Installing to a
     )
 
 The Django apps shown are for demonstration only-- django-deepzoom has no 
-dependencies on them, except for staticfiles and admin if using their respective functions.
+dependencies on them.
  
 3.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, something like this::
 
     (in models.py)
       
     from deepzoom.models import DeepZoom, UploadedImage
-	from django.contrib import admin
       
     class MyImage(UploadedImage):
-		'''
-		Overrides UploadedImage base class.
-		'''
-		pass
-	
-	admin.site.register(MyImage)
+      '''
+      Overrides UploadedImage base class.
+      '''
+      pass
 
 The save() method of the overridden class can be overridden, too, of course, to 
 add additional fields or features.
@@ -199,8 +193,8 @@ The slug parameter name does not have to be the same as the example as long as
 it matches the corresponding urlconf signature.  (See above)
 
 7.) In your template, create an empty div with a unique ID.  Load the deepzoom 
-tags and pass the deepzoom object and deepzoom div ID to the template tag in 
-the body like this::
+tags and pass the deepzoom object and deepzoom div ID to the template tag inside 
+a <script> block in the body like this::
 
     (in e.g. deepzoom.html)
       
@@ -208,12 +202,9 @@ the body like this::
       
     {% load deepzoom_tags %}
       
-    <div id="deepzoom_div" style="width: 1024px; height: 768px;"></div>
+    <div id="deepzoom_div"></div>
     
-    {% deepzoom_js deepzoom_obj "deepzoom_div" %}
-
-.. note::
-		The deepzoom div should be assigned absolute dimensions.
+    <script>{% deepzoom_js deepzoom_obj "deepzoom_div" %}</script>
 
 Neither the deep zoom queryset object nor the deep zoom div ID have to be named 
 like in the example.  Any name can be given to either, so long as the deep zoom 
@@ -222,16 +213,12 @@ in the view providing it and the deep zoom div ID matches the name passed to the
 deepzoom_js template tag.
 
 8.) Run `python manage.py collectstatic` to collect your static files into 
-STATIC_ROOT, specifically so that the OpenSeaDragon files are available.
+STATIC_ROOT, specifically so that the openseadragon files are available.
 
 9.) Start the development server and visit `http://127.0.0.1:8000/admin/` to 
 upload an image to the associated model (you'll need the Admin app enabled).  
 Be sure to check the `Generate deep zoom?` checkbox for that image before 
 saving it.
-
-10.) Navigate to the page containing the deep zoom image and either click/touch it or click/touch the overlaid controls to zoom into and out of the tiled image.
-
-**Behold!** `A deeply zoomable image! <http://django-deepzoom.invocatum.net/featured/>`_
 
 How do I configure it?
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -256,11 +243,10 @@ be *'/path/to/media_root/my/uploaded/images/'*.
 
 **DEEPZOOM_PARAMS**
 
-This is a list of arguments used to initialize the deep zoom creator, including 
-'tile_size', 'tile_overlap', 'tile_format', 'image_quality', and 'resize_filter'
-in order.
-If undefined, ``{'tile_size': 256, 'tile_overlap': 1, 'tile_format': "jpg", 
-'image_quality': 0.85, 'resize_filter': "antialias"}`` is used by default.
+This is a dictionary of arguments used to initialize the deep zoom creator, 
+including 'tile_size', 'tile_overlap', 'tile_format', 'image_quality', and 
+'resize_filter'.
+If undefined, ``{'tile_size': 256, 'tile_overlap': 1, 'tile_format': "jpg", 'image_quality': 0.85, 'resize_filter': "antialias"}`` is used by default.
 
 *tile_size*
 
@@ -347,6 +333,37 @@ E.g. after prepending your media root, the default DEEPZOOM_ROOT is
 
 Or, if you define ``DEEPZOOM_ROOT='my/deepzoom/images'``, the final path will be 
 *'/path/to/media_root/my/deepzoom/images/'*.
+
+**DEFAULT_CREATE_DEEPZOOM_OPTION**
+
+A Boolean value that sets the default value of the `create_deepzoom` field 
+globally.  By setting the `DEFAULT_CREATE_DEEPZOOM_OPTION` to `True` or `False`, 
+new instances of a `UploadedImage` subclass will be set to always create a 
+deepzoom or never to create a deepzoom.
+
+**LOGGING**
+
+Certain non-critical exceptions are logged instead of thrown. To capture the 
+log messages, add this logging configuration to your settings.py file::
+
+	LOGGING = {
+		'version': 1,
+		'disable_existing_loggers': False,
+		'handlers': {
+			'file': {
+				'level': 'ERROR',
+				'class': 'logging.FileHandler',
+				'filename': os.path.join(TEST_ROOT, 'deepzoom.exception.log'),
+			},
+		},
+		'loggers': {
+			'deepzoom.models': {
+				'handlers': ['file'],
+				'level': 'ERROR',
+				'propagate': True,
+			},
+		},
+	}
 
 How is it licensed?
 ~~~~~~~~~~~~~~~~~~~
