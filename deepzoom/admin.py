@@ -1,4 +1,5 @@
 '''django-deepzoom admin'''
+
 from django.contrib import admin
 from . import models
 
@@ -17,7 +18,8 @@ def delete_selected(self, request, queryset):
 
 @admin.register(models.DeepZoom)
 class DeepZoomAdmin(admin.ModelAdmin):
-    readonly_fields = ('name', 'slug', 'deepzoom_image', 'created',)
+    readonly_fields = ('name', 'slug', 'associated_image', 'deepzoom_image', 
+                       'deepzoom_path', 'created', 'updated',)
     actions = [delete_selected]
 #end DeepZoomAdmin
 
