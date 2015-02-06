@@ -120,18 +120,26 @@ If you download it directly, change <VERSION> to one of the available version
 numbers, of course.  Installing to a 
 `virtualenv <https://pypi.python.org/pypi/virtualenv>`_ is a good idea, too.
 
-2.) Add "deepzoom" to your INSTALLED_APPS setting like this::
+2.) Add "deepzoom" to your INSTALLED_APPS setting.  Django 1.7 introduced the 
+`AppConfig.ready()` entry point for app intialization which is needed for the 
+new signals design (in that version of Django). That means the django-deepzoom 
+app needs to be specified one way in Django 1.7+ and the traditional way in 
+previous Django versions.
+In Django 1.7+ add the app like this::
 
     (in settings.py)
-      
+    
     INSTALLED_APPS = (
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.sites',
-        'django.contrib.messages',
-        'django.contrib.staticfiles',
-        'django.contrib.admin', 
+        ...
+        'deepzoom.apps.DeepZoomAppConfig',
+        ...
+    )
+
+However, in Django 1.6 and before, add the app the traditional way, like this::
+
+    (in settings.py)
+    
+    INSTALLED_APPS = (
         ...
         'deepzoom',
         ...
@@ -143,9 +151,9 @@ dependencies on them.
 3.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, something like this::
 
     (in models.py)
-      
+    
     from deepzoom.models import DeepZoom, UploadedImage
-      
+    
     class MyImage(UploadedImage):
       '''
       Overrides UploadedImage base class.
@@ -175,11 +183,11 @@ The slug parameter name does not have to be the same as the example as long as
 it matches the corresponding view. (See below)
 
 6.) Write a view that queries for a specific DeepZoom object and passes it to a template, something like this::
-   
+
     (in views.py)
-      
+    
     from deepzoom.models import DeepZoom
-      
+    
     def deepzoom_view(request, passed_slug=None):
       try:
           _deepzoom_obj = DeepZoom.objects.get(slug=passed_slug)
@@ -197,11 +205,11 @@ tags and pass the deepzoom object and deepzoom div ID to the template tag inside
 a <script> block in the body like this::
 
     (in e.g. deepzoom.html)
-      
+    
     {% extends "base.html" %}
-      
+    
     {% load deepzoom_tags %}
-      
+    
     <div id="deepzoom_div"></div>
     
     <script>{% deepzoom_js deepzoom_obj "deepzoom_div" %}</script>
@@ -346,24 +354,24 @@ deepzoom or never to create a deepzoom.
 Certain non-critical exceptions are logged instead of thrown. To capture the 
 log messages, add this logging configuration to your settings.py file::
 
-	LOGGING = {
-		'version': 1,
-		'disable_existing_loggers': False,
-		'handlers': {
-			'file': {
-				'level': 'ERROR',
-				'class': 'logging.FileHandler',
-				'filename': os.path.join(TEST_ROOT, 'deepzoom.exception.log'),
-			},
-		},
-		'loggers': {
-			'deepzoom.models': {
-				'handlers': ['file'],
-				'level': 'ERROR',
-				'propagate': True,
-			},
-		},
-	}
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'ERROR',
+                'class': 'logging.FileHandler',
+                'filename': 'deepzoom.exception.log',
+            },
+        },
+        'loggers': {
+            'deepzoom.models': {
+                'handlers': ['file'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+        },
+    }
 
 How is it licensed?
 ~~~~~~~~~~~~~~~~~~~

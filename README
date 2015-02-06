@@ -21,7 +21,7 @@ Let me know what you think of it...
 What's New?
 -----------
 
-Django-deepzoom 3.0 involves major architectural changes so a major version bump is necessary.  It introduces signal-based save, a new `DEFAULT_CREATE_DEEPZOOM_OPTION` setting, better file management, and decoupled file locations.   It remains Python 2/3 compatible, Django 1.4+ compatible, and Pillow 1.7.8+ compatible.
+Django-deepzoom 3.0 involves major architectural changes so a major version bump is necessary. It introduces signal-based save, a new `DEFAULT_CREATE_DEEPZOOM_OPTION` setting, better file management, and decoupled file locations. It remains Python 2/3 compatible, Django 1.4+ compatible, and Pillow 1.7.8+ compatible.
 
 Signal-based save: Save/update code has been completely removed from model save/delete methods and distributed amongst signal handler methods.  This was done to improve inter-model coordination and to beter manage state transitions during field updates.  Fields that could not be updated before, e.g. `UploadedImage.uploaded_image` now are handled in the expected way.  If an entirely new image is uploaded to an existing `UploadedImage` subclass and is saved, the previous `uploaded_image` will be deleted, the previous associated deepzoom will be deleted, the new uploaded image saved to disk, and an entirely new deepzoom will be generated from the new image.
 
@@ -55,30 +55,30 @@ Quick start
 
 or, like this:
 
-    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-2.0.tar.gz
+    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-3.0.tar.gz
     tar -xvf django-deepzoom-3.0.tar.gz
     cd django-deepzoom-3.0
     python setup.py install
 
 2.) Add "deepzoom" to your INSTALLED_APPS setting.  Django 1.7 introduced the 
-	`AppConfig.ready()` entry point for app intialization which is needed for 
-	the new signals design (in that version of Django).  That means the 
-	django-deepzoom app needs to be specified one way in Django 1.7+ and the 
-	traditional way in previous Django versions.
-	In Django 1.7+ add the app like this::
+`AppConfig.ready()` entry point for app intialization which is needed for the 
+new signals design (in that version of Django).  That means the django-deepzoom 
+app needs to be specified one way in Django 1.7+ and the traditional way in 
+previous Django versions.
+In Django 1.7+ add the app like this::
 
     (in settings.py)
-      
+    
     INSTALLED_APPS = (
         ...
         'deepzoom.apps.DeepZoomAppConfig',
         ...
     )
 
-	However, in Django 1.6 and before, add the app the traditional way, like this::
+However, in Django 1.6 and before, add the app the traditional way, like this::
 
     (in settings.py)
-      
+    
     INSTALLED_APPS = (
         ...
         'deepzoom',
@@ -86,7 +86,7 @@ or, like this:
     )
 
 3.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, 
-    something like this:
+something like this:
 
     (in models.py)
       
@@ -99,20 +99,20 @@ or, like this:
         pass
 
 4.) Import signals.py. If using Django 1.6 or before, the signals module must 
-	be imported after the model definitions have been parsed.  This means the 
-	signals.py import statement must either be added to the end of the models.py 
-	file or in the app __init__.py file.  The former avoids breaking test 
-	coverage, so may be preferable. Django 1.7+ does not require importing 
-	signals.py because that is handled by the `AppConfig.ready()` method.
-	Import the signals.py file, like this::
+be imported after the model definitions have been parsed.  This means the 
+signals.py import statement must either be added to the end of the models.py 
+file or in the app __init__.py file.  The former avoids breaking test coverage, 
+so may be preferable. Django 1.7+ does not require importing signals.py because 
+that is handled by the `AppConfig.ready()` method.
+Import the signals.py file, like this::
 
-	(in models.py)
-	
-	...
-	model definitions...
-	...
-	
-	import deepzoom.signals
+    (in models.py)
+    
+    ...
+    model definitions...
+    ...
+    
+    import deepzoom.signals
 
 5.) Run `python manage.py syncdb` to create the django-deepzoom models.
 
@@ -131,7 +131,7 @@ or, like this:
     )
 
 7.) Write a view that queries for a specific DeepZoom object and passes it to a 
-    template, something like this:
+template, something like this:
    
     (in views.py)
       
@@ -147,8 +147,8 @@ or, like this:
                                 context_instance=RequestContext(request))
 
 8.) In your template, create an empty div with a unique ID.  Load the deepzoom 
-    tags and pass the deepzoom object and deepzoom div ID to the template tag 
-    inside a <script> block in the body like this:
+tags and pass the deepzoom object and deepzoom div ID to the template tag 
+inside a <script> block in the body like this:
 
     (in e.g. deepzoom.html)
       
@@ -163,13 +163,12 @@ or, like this:
 9.) Run `python manage.py collectstatic` to collect your static files into STATIC_ROOT.
 
 10.) Start the development server and visit `http://127.0.0.1:8000/admin/` to 
-    upload an image to the associated model (you'll need the Admin app enabled).
-    Be sure to check the `Generate deep zoom?` checkbox for that image before 
-    saving it.
+upload an image to the associated model (you'll need the Admin app enabled).
+Be sure to check the `Generate deep zoom?` checkbox for that image before 
+saving it.
 
 11.) Navigate to the page containing the deep zoom image and either click/touch 
-    it or click/touch the overlaid controls to zoom into and out of the tiled 
-    image.
+it or click/touch the overlaid controls to zoom into and out of the tiled image.
 
 `**Behold!** <http://django-deepzoom.invocatum.net/featured/>`_
 

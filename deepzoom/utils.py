@@ -6,7 +6,8 @@ from django import get_version
 
 def is_django_version_greater_than(major=1, minor=4):
     """
-    Returns whether Django version supports `update_fields` parameter in save().
+    Returns whether Django version is greater than given major and minor numbers.
+    Major and minor should be passed as ints.
     """
     _major, _minor = get_version().split('.')[:2]
     return (int(_major) >= major and int(_minor) > minor)
