@@ -37,7 +37,7 @@ Let me know what you think of it...
 What's New?
 -----------
 
-Django-deepzoom 3.0 involves major architectural changes so a major version bump is necessary. It introduces signal-based save, a new `DEFAULT_CREATE_DEEPZOOM_OPTION` setting, better file management, and decoupled file locations. It remains Python 2/3 compatible, Django 1.4+ compatible, and Pillow 1.7.8+ compatible.
+Django-deepzoom 3.0 involves major architectural changes so a major version bump is necessary. It introduces signal-based save, a new `DEFAULT_CREATE_DEEPZOOM_OPTION` setting, better file management, and decoupled file locations. It continues to be Python 2/3 compatible, Django 1.4+ compatible, and Pillow 1.7.8+ compatible.
 
 Signal-based save: Save/update code has been completely removed from model save/delete methods and distributed amongst signal handler methods.  This was done to improve inter-model coordination and to beter manage state transitions during field updates.  Fields that could not be updated before, e.g. `UploadedImage.uploaded_image` now are handled in the expected way.  If an entirely new image is uploaded to an existing `UploadedImage` subclass and is saved, the previous `uploaded_image` will be deleted, the previous associated deepzoom will be deleted, the new uploaded image saved to disk, and an entirely new deepzoom will be generated from the new image.
 
@@ -50,26 +50,26 @@ Decoupled file locations: File locations saved to instances are now computed and
 Run tests
 ---------
 After django-deepzoom has been installed, you may want to sanity check it by 
-running tests, like this:
+running tests, like this::
 
     python manage.py test deepzoom --settings=deepzoom.test.test_settings
 
-    ATTENTION:
-        Some of the negative tests are intended to throw exceptions.  The error 
-        text will display mixed in with the test results.  THAT IS EXPECTED!
 
-        If the end result is **OK** then all tests have passed.  Enjoy.
+.. ATTENTION::
+  Some of the negative tests are intended to throw exceptions.  The error text will display mixed in with the test results.  THAT IS EXPECTED!
+
+  If the end result is **OK** then all tests have passed.  Enjoy.
 
 
 Quick start
 -----------
 
-1.) Install "django-deepzoom" like this:
+1.) Install "django-deepzoom" like this::
 
     pip install -U django-deepzoom
 
 
-or, like this:
+or, like this::
 
     wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-3.0.tar.gz
     tar -xvf django-deepzoom-3.0.tar.gz
@@ -102,7 +102,7 @@ However, in Django 1.6 and before, add the app the traditional way, like this::
     )
 
 3.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, 
-something like this:
+something like this::
 
     (in models.py)
       
@@ -147,7 +147,7 @@ Import the signals.py file, like this::
     )
 
 7.) Write a view that queries for a specific DeepZoom object and passes it to a 
-template, something like this:
+template, something like this::
    
     (in views.py)
       
@@ -164,7 +164,7 @@ template, something like this:
 
 8.) In your template, create an empty div with a unique ID.  Load the deepzoom 
 tags and pass the deepzoom object and deepzoom div ID to the template tag 
-inside a <script> block in the body like this:
+inside a <script> block in the body like this::
 
     (in e.g. deepzoom.html)
       

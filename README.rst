@@ -50,26 +50,26 @@ Decoupled file locations: File locations saved to instances are now computed and
 Run tests
 ---------
 After django-deepzoom has been installed, you may want to sanity check it by 
-running tests, like this:
+running tests, like this::
 
     python manage.py test deepzoom --settings=deepzoom.test.test_settings
 
-    ATTENTION:
-        Some of the negative tests are intended to throw exceptions.  The error 
-        text will display mixed in with the test results.  THAT IS EXPECTED!
 
-        If the end result is **OK** then all tests have passed.  Enjoy.
+.. ATTENTION::
+  Some of the negative tests are intended to throw exceptions.  The error text will display mixed in with the test results.  THAT IS EXPECTED!
+
+  If the end result is **OK** then all tests have passed.  Enjoy.
 
 
 Quick start
 -----------
 
-1.) Install "django-deepzoom" like this:
+1.) Install "django-deepzoom" like this::
 
     pip install -U django-deepzoom
 
 
-or, like this:
+or, like this::
 
     wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-3.0.tar.gz
     tar -xvf django-deepzoom-3.0.tar.gz
@@ -102,7 +102,7 @@ However, in Django 1.6 and before, add the app the traditional way, like this::
     )
 
 3.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, 
-something like this:
+something like this::
 
     (in models.py)
     
@@ -118,7 +118,8 @@ something like this:
 be imported after the model definitions have been parsed.  This means the 
 signals.py import statement must either be added to the end of the models.py 
 file or in the app __init__.py file.  The former avoids breaking test 
-coverage, so may be preferable. 
+coverage, so may be preferable. Django 1.7+ does not require importing 
+signals.py because that is handled by the `AppConfig.ready()` method.
 Import the signals.py file, like this::
 
     (in models.py)
@@ -146,7 +147,7 @@ Import the signals.py file, like this::
     )
 
 7.) Write a view that queries for a specific DeepZoom object and passes it to a 
-template, something like this:
+template, something like this::
    
     (in views.py)
     
@@ -163,7 +164,7 @@ template, something like this:
 
 8.) In your template, create an empty div with a unique ID.  Load the deepzoom 
 tags and pass the deepzoom object and deepzoom div ID to the template tag 
-inside a <script> block in the body like this:
+inside a <script> block in the body like this::
 
     (in e.g. deepzoom.html)
     
