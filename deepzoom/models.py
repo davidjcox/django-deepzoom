@@ -2,7 +2,6 @@
 
 from django.db import models
 from django.conf import settings
-from django.contrib import admin
 
 import os
 import sys
@@ -210,7 +209,7 @@ class UploadedImage(ModelDiffMixin, models.Model):
             uploaded_image_root = instance.DEFAULT_UPLOADEDIMAGE_ROOT
         
         if not isinstance(uploaded_image_root, six.string_types):
-                raise AttributeError("`UPLOADEDIMAGE_ROOT` must be a string.")
+            raise AttributeError("`UPLOADEDIMAGE_ROOT` must be a string.")
         
         extension = os.path.splitext(filename)[1]
         filename = instance.slug + extension
