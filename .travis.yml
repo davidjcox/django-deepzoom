@@ -18,9 +18,13 @@ install:
   - "if [[ ${TRAVIS_PYTHON_VERSION::1} != '3' ]]; then pip install pillow==1.7.8; fi"
   - export PYTHONPATH=.
   - pip install -r requirements.txt
+  - pip install coveralls
 
 script:
-  - django-admin.py startproject deepzoom_test && python deepzoom_test/manage.py test deepzoom --settings=deepzoom.test.test_settings
+  - django-admin.py startproject deepzoom_test && coverage run --source='deepzoom' --omit='deepzoom/admin.py' deepzoom_test/manage.py test deepzoom --settings=deepzoom.test.test_settings
+
+after_success:
+  coveralls
 
 matrix:
   fast_finish: true
