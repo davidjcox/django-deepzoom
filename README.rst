@@ -2,6 +2,22 @@
 django-deepzoom
 ===============
 
+.. image:: https://badge.fury.io/py/django-deepzoom.svg
+    :target: http://badge.fury.io/py/django-deepzoom
+
+.. image:: https://pypip.in/d/PROJECT/badge.png
+    :target: https://crate.io/packages/PROJECT/
+
+.. image:: https://travis-ci.org/davidjcox/django-deepzoom.svg?branch=master
+    :target: https://travis-ci.org/davidjcox/django-deepzoom
+
+.. image:: https://landscape.io/github/davidjcox/django-deepzoom/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/davidjcox/django-deepzoom/master
+   :alt: Code Health
+
+.. image:: https://coveralls.io/repos/davidjcox/django-deepzoom/badge.svg?branch=master
+  :target: https://coveralls.io/r/davidjcox/django-deepzoom?branch=master
+
 Django-deepzoom is a drop-in Django app for the creation and use of Deep Zoom 
 tiled images.  It handily integrates Daniel Gasienica's and Kapil Thangavelu's 
 deepzoom.py image generator and the OpenSeadragon deep zoom viewer into a set 
