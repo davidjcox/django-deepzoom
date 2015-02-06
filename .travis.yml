@@ -1,5 +1,3 @@
-#travis-ci yaml file for django-deepzoom
-
 language: python
 
 python:
