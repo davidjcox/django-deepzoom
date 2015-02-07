@@ -22,7 +22,7 @@ DJANGO_SAVE_UPDATEABLE = is_django_version_greater_than(1, 4)
 
 
 @receiver_subclasses(pre_save, sender=UploadedImage, _dispatch_uid="d__ui_a_dz")
-def delete__uploadedimage_and_deepzoom(sender, instance, **kwargs):
+def delete__uploadedimage_and_deepzoom(instance, **kwargs):
     """
     If image already exists, but new image uploaded, delete existing image file.
     If deepzoom image is associated with previous uploaded image, delete it.
@@ -30,7 +30,7 @@ def delete__uploadedimage_and_deepzoom(sender, instance, **kwargs):
     uploaded_field_changed = ('uploaded_image' in instance.changed_fields)
     
     if uploaded_field_changed:
-        previous_image, current_image = instance.get_field_diff('uploaded_image')
+        previous_image = instance.get_field_diff('uploaded_image')[0]
         if previous_image:
             instance.delete_image_file(previous_image.path)
             if (instance.associated_deepzoom is not None):
@@ -38,7 +38,7 @@ def delete__uploadedimage_and_deepzoom(sender, instance, **kwargs):
 
 
 @receiver_subclasses(pre_save, sender=UploadedImage, _dispatch_uid="s__ui")
-def slugify__uploadedimage(sender, instance, slugify=slugify, **kwargs):
+def slugify__uploadedimage(instance, slugify=slugify, **kwargs):
     """
     Slugifies UploadedImage `name`.
     """
@@ -49,7 +49,7 @@ def slugify__uploadedimage(sender, instance, slugify=slugify, **kwargs):
     
 
 @receiver_subclasses(post_save, sender=UploadedImage, _dispatch_uid="c_u__dz")
-def create_update__deepzoom(sender, instance, created, **kwargs):
+def create_update__deepzoom(instance, created, **kwargs):
     """
     Kicks off deepzoom creation sequence by creating a deepzoom instance.
     Associates image to deepzoom with returned deepzoom reference.
@@ -70,7 +70,7 @@ def create_update__deepzoom(sender, instance, created, **kwargs):
 
 
 @receiver_subclasses(pre_delete, sender=UploadedImage, _dispatch_uid="d__ui")
-def delete__uploadedimage(sender, instance, **kwargs):
+def delete__uploadedimage(instance, **kwargs):
     """
     Handles deletion of uploaded image file from storage.
     """
@@ -80,7 +80,7 @@ def delete__uploadedimage(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=DeepZoom, dispatch_uid="s__d")
-def slugify__deepzoom(sender, instance, slugify=slugify, **kwargs):
+def slugify__deepzoom(instance, slugify=slugify, **kwargs):
     """
     Slugifies Deepzoom `name`.
     """
@@ -91,7 +91,7 @@ def slugify__deepzoom(sender, instance, slugify=slugify, **kwargs):
 
 
 @receiver(post_save, sender=DeepZoom, dispatch_uid="c__dz_f")
-def create__deepzoom_files(sender, instance, created, **kwargs):
+def create__deepzoom_files(instance, created, **kwargs):
     """
     Processes deepzoom from uploaded image and saves deepzoom files to storage.
     """
@@ -105,7 +105,7 @@ def create__deepzoom_files(sender, instance, created, **kwargs):
             instance.save()
 
 @receiver(pre_delete, sender=DeepZoom, dispatch_uid="d__d")
-def delete__deepzoom(sender, instance, **kwargs):
+def delete__deepzoom(instance, **kwargs):
     """
     Handles deletion of deepzoom image files from storage.
     """
