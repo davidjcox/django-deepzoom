@@ -5,8 +5,8 @@ django-deepzoom
 .. image:: https://badge.fury.io/py/django-deepzoom.svg
     :target: http://badge.fury.io/py/django-deepzoom
 
-.. image:: https://pypip.in/d/PROJECT/badge.png
-    :target: https://crate.io/packages/PROJECT/
+.. image:: https://pypip.in/d/django-deepzoom/badge.png
+    :target: https://crate.io/packages/django-deepzoom/
 
 .. image:: https://travis-ci.org/davidjcox/django-deepzoom.svg?branch=master
     :target: https://travis-ci.org/davidjcox/django-deepzoom
