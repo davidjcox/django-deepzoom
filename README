@@ -30,14 +30,14 @@ Detailed documentation is available on http://django-deepzoom.readthedocs.org/en
 
 :Contact:   <davidjcox.at@gmail.com>
 
-:Version:   3.0
+:Version:   3.0.1
 
 Let me know what you think of it...
 
 What's New?
 -----------
 
-Django-deepzoom 3.0 involves major architectural changes so a major version bump is necessary. It introduces signal-based save, a new `DEFAULT_CREATE_DEEPZOOM_OPTION` setting, better file management, and decoupled file locations. It continues to be Python 2/3 compatible, Django 1.4+ compatible, and Pillow 1.7.8+ compatible.
+Django-deepzoom 3.0.1 involves major architectural changes so a major version bump is necessary. It introduces signal-based save, a new `DEFAULT_CREATE_DEEPZOOM_OPTION` setting, better file management, and decoupled file locations. It continues to be Python 2/3 compatible, Django 1.4+ compatible, and Pillow 1.7.8+ compatible.
 
 Signal-based save: Save/update code has been completely removed from model save/delete methods and distributed amongst signal handler methods.  This was done to improve inter-model coordination and to beter manage state transitions during field updates.  Fields that could not be updated before, e.g. `UploadedImage.uploaded_image` now are handled in the expected way.  If an entirely new image is uploaded to an existing `UploadedImage` subclass and is saved, the previous `uploaded_image` will be deleted, the previous associated deepzoom will be deleted, the new uploaded image saved to disk, and an entirely new deepzoom will be generated from the new image.
 
@@ -71,9 +71,9 @@ Quick start
 
 or, like this::
 
-    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-3.0.tar.gz
-    tar -xvf django-deepzoom-3.0.tar.gz
-    cd django-deepzoom-3.0
+    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-3.0.1.tar.gz
+    tar -xvf django-deepzoom-3.0.1.tar.gz
+    cd django-deepzoom-3.0.1
     python setup.py install
 
 2.) Add "deepzoom" to your INSTALLED_APPS setting.  Django 1.7 introduced the 
