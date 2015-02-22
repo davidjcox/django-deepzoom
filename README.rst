@@ -30,7 +30,7 @@ Detailed documentation is available on http://django-deepzoom.readthedocs.org/en
 
 :Contact:   <davidjcox.at@gmail.com>
 
-:Version:   3.0.1
+:Version:   3.0.2
 
 Let me know what you think of it...
 
@@ -71,9 +71,9 @@ Quick start
 
 or, like this::
 
-    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-3.0.1.tar.gz
-    tar -xvf django-deepzoom-3.0.1.tar.gz
-    cd django-deepzoom-3.0.1
+    wget https://pypi.python.org/packages/source/d/django-deepzoom/django-deepzoom-3.0.2.tar.gz
+    tar -xvf django-deepzoom-3.0.2.tar.gz
+    cd django-deepzoom-3.0.2
     python setup.py install
 
 2.) Add "deepzoom" to your INSTALLED_APPS setting.  Django 1.7 introduced the 
@@ -101,20 +101,7 @@ However, in Django 1.6 and before, add the app the traditional way, like this::
         ...
     )
 
-3.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, 
-something like this::
-
-    (in models.py)
-    
-    from deepzoom.models import DeepZoom, UploadedImage
-      
-    class MyImage(UploadedImage):
-        '''
-        Overrides UploadedImage base class.
-        '''
-        pass
-
-4.) Add a logging configuration to your settings.py file, like this::
+3.) Add a logging configuration to your settings.py file, like this::
 
     LOGGING = {
         'version': 1,
@@ -134,6 +121,19 @@ something like this::
             },
         },
     }
+
+4.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, 
+something like this::
+
+    (in models.py)
+    
+    from deepzoom.models import DeepZoom, UploadedImage
+      
+    class MyImage(UploadedImage):
+        '''
+        Overrides UploadedImage base class.
+        '''
+        pass
 
 5.) Import signals.py. If using Django 1.6 or before, the signals module must 
 be imported after the model definitions have been parsed.  This means the 
