@@ -144,9 +144,6 @@ However, in Django 1.6 and before, add the app the traditional way, like this::
         'deepzoom',
         ...
     )
-
-The Django apps shown are for demonstration only-- django-deepzoom has no 
-dependencies on them.
  
 3.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, something like this::
 

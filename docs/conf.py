@@ -48,7 +48,7 @@ copyright = u'2013, David J Cox'
 # built documents.
 #
 # The short X.Y version.
-version = '3.0'
+version = '3.0.1'
 # The full version, including alpha/beta/rc tags.
 release = '3.0.1'
 

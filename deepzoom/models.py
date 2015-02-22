@@ -90,7 +90,8 @@ class DeepZoom(ModelDiffMixin, models.Model):
         try:
             dz_params = settings.DEEPZOOM_PARAMS
         except AttributeError:
-            logger.exception("`DEEPZOOM_PARAMS` incorrectly defined!")
+            if 'deepzoom.models' in settings.LOGGING['loggers']:
+                logger.exception("`DEEPZOOM_PARAMS` incorrectly defined!")
             dz_params = self.DEFAULT_DEEPZOOM_PARAMS
         
         if not isinstance(dz_params, dict):

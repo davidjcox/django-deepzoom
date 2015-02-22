@@ -37,7 +37,7 @@ Let me know what you think of it...
 What's New?
 -----------
 
-Django-deepzoom 3.0.1 involves major architectural changes so a major version bump is necessary. It introduces signal-based save, a new `DEFAULT_CREATE_DEEPZOOM_OPTION` setting, better file management, and decoupled file locations. It continues to be Python 2/3 compatible, Django 1.4+ compatible, and Pillow 1.7.8+ compatible.
+Django-deepzoom 3.0 involves major architectural changes so a major version bump is necessary. It introduces signal-based save, a new `DEFAULT_CREATE_DEEPZOOM_OPTION` setting, better file management, and decoupled file locations. It continues to be Python 2/3 compatible, Django 1.4+ compatible, and Pillow 1.7.8+ compatible.
 
 Signal-based save: Save/update code has been completely removed from model save/delete methods and distributed amongst signal handler methods.  This was done to improve inter-model coordination and to beter manage state transitions during field updates.  Fields that could not be updated before, e.g. `UploadedImage.uploaded_image` now are handled in the expected way.  If an entirely new image is uploaded to an existing `UploadedImage` subclass and is saved, the previous `uploaded_image` will be deleted, the previous associated deepzoom will be deleted, the new uploaded image saved to disk, and an entirely new deepzoom will be generated from the new image.
 
@@ -101,7 +101,28 @@ However, in Django 1.6 and before, add the app the traditional way, like this::
         ...
     )
 
-3.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, 
+3.) Add a logging configuration to your settings.py file, like this::
+
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'ERROR',
+                'class': 'logging.FileHandler',
+                'filename': 'deepzoom.exception.log',
+            },
+        },
+        'loggers': {
+            'deepzoom.models': {
+                'handlers': ['file'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+        },
+    }
+
+4.) Sub-class the '`UploadedImage`' model class as your own (image-based) class, 
 something like this::
 
     (in models.py)
@@ -114,7 +135,7 @@ something like this::
         '''
         pass
 
-4.) Import signals.py. If using Django 1.6 or before, the signals module must 
+5.) Import signals.py. If using Django 1.6 or before, the signals module must 
 be imported after the model definitions have been parsed.  This means the 
 signals.py import statement must either be added to the end of the models.py 
 file or in the app __init__.py file.  The former avoids breaking test coverage, 
@@ -130,9 +151,9 @@ Import the signals.py file, like this::
     
     import deepzoom.signals
 
-5.) Run `python manage.py syncdb` to create the django-deepzoom models.
+6.) Run `python manage.py syncdb` to create the django-deepzoom models.
 
-6.) Add an appropriate URL to your Urlconf, something like this::
+7.) Add an appropriate URL to your Urlconf, something like this::
 
     (in urls.py)
     
@@ -146,7 +167,7 @@ Import the signals.py file, like this::
         ...
     )
 
-7.) Write a view that queries for a specific DeepZoom object and passes it to a 
+8.) Write a view that queries for a specific DeepZoom object and passes it to a 
 template, something like this::
    
     (in views.py)
@@ -162,7 +183,7 @@ template, something like this::
                                 {'deepzoom_obj': _deepzoom_obj}, 
                                 context_instance=RequestContext(request))
 
-8.) In your template, create an empty div with a unique ID.  Load the deepzoom 
+9.) In your template, create an empty div with a unique ID.  Load the deepzoom 
 tags and pass the deepzoom object and deepzoom div ID to the template tag 
 inside a <script> block in the body like this::
 
@@ -176,14 +197,14 @@ inside a <script> block in the body like this::
     
     <script>{% deepzoom_js deepzoom_obj "deepzoom_div" %}</script>
 
-9.) Run `python manage.py collectstatic` to collect your static files into STATIC_ROOT.
+10.) Run `python manage.py collectstatic` to collect your static files into STATIC_ROOT.
 
-10.) Start the development server and visit `http://127.0.0.1:8000/admin/` to 
+11.) Start the development server and visit `http://127.0.0.1:8000/admin/` to 
 upload an image to the associated model (you'll need the Admin app enabled).
 Be sure to check the `Generate deep zoom?` checkbox for that image before 
 saving it.
 
-11.) Navigate to the page containing the deep zoom image and either click/touch 
+12.) Navigate to the page containing the deep zoom image and either click/touch 
 it or click/touch the overlaid controls to zoom into and out of the tiled image.
 
 `**Behold!** <http://django-deepzoom.invocatum.net/featured/>`_
