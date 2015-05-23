@@ -240,12 +240,12 @@ class UploadedImage(ModelDiffMixin, models.Model):
                                           help_text="Generate deep zoom?")
     
     #Link this image to generated deep zoom.
-    associated_deepzoom = models.OneToOneField(DeepZoom,
-                                               null=True,
-                                               blank=True,
-                                               related_name="%(app_label)s_%(class)s",
-                                               editable=False,
-                                               on_delete=models.SET_NULL)
+    associated_deepzoom = models.ForeignKey(DeepZoom,
+                                            null=True,
+                                            blank=True,
+                                            related_name="%(app_label)s_%(class)s",
+                                            editable=False,
+                                            on_delete=models.SET_NULL)
     
     created = models.DateTimeField(auto_now_add=True,
                                    editable=False)
