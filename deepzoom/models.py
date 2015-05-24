@@ -217,8 +217,9 @@ class UploadedImage(ModelDiffMixin, models.Model):
         return (os.path.join(uploaded_image_root, filename))
     
     
-    uploaded_image = models.ImageField(upload_to=get_uploaded_image_root, 
-                                       height_field='height', 
+    uploaded_image = models.ImageField(upload_to=get_uploaded_image_root,
+                                       max_length=512,
+                                       height_field='height',
                                        width_field='width')
     
     name = models.CharField(max_length=128,
