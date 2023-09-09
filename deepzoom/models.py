@@ -98,10 +98,10 @@ class DeepZoom(ModelDiffMixin, models.Model):
             raise AttributeError("`DEEPZOOM_PARAMS` must be a dictionary.")
         
         _tile_size = self.get_dz_param('tile_size', dz_params)
-        _tile_overlap = self.get_dz_param('tile_size', dz_params)
-        _tile_format = self.get_dz_param('tile_size', dz_params)
-        _image_quality = self.get_dz_param('tile_size', dz_params)
-        _resize_filter = self.get_dz_param('tile_size', dz_params)
+        _tile_overlap = self.get_dz_param('tile_overlap', dz_params)
+        _tile_format = self.get_dz_param('tile_format', dz_params)
+        _image_quality = self.get_dz_param('image_quality', dz_params)
+        _resize_filter = self.get_dz_param('resize_filter', dz_params)
         
         #Initialize deep zoom creator.
         creator = deepzoom.ImageCreator(tile_size=_tile_size, 
